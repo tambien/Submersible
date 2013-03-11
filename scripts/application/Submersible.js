@@ -20,21 +20,23 @@ var SUBMERSIBLE = function() {
 		setupStats();
 		//bind the basic events
 		bindEvents();
+		//make a fish
+		SUBMERSIBLE.fishCollection = new SUBMERSIBLE.FishCollection();
 		//start the drawing
 		render();
 	}
 
 	//THREE////////////////////////////////////////////////////////////////////
 
-	var camera, projector, renderer;
+	var projector, renderer;
 
 	function setupTHREE() {
-		camera = new THREE.PerspectiveCamera(70, 4 / 3, 1, 10000);
-		camera.position.set(0, 0, 1000);
+		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(30, 4 / 3, 1, 10000);
+		SUBMERSIBLE.camera.position.set(0, 0, 1000);
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
 		//the renderer
-		renderer = new THREE.CanvasRenderer();
+		renderer = new THREE.WebGLRenderer();
 		$container.append(renderer.domElement);
 		//initialize the size
 		sizeTHREE();
@@ -43,8 +45,8 @@ var SUBMERSIBLE = function() {
 	function sizeTHREE() {
 		SUBMERSIBLE.width = $container.width();
 		SUBMERSIBLE.height = $container.height();
-		camera.aspect = SUBMERSIBLE.width / SUBMERSIBLE.height;
-		camera.updateProjectionMatrix();
+		SUBMERSIBLE.camera.aspect = SUBMERSIBLE.width / SUBMERSIBLE.height;
+		SUBMERSIBLE.camera.updateProjectionMatrix();
 		renderer.setSize(SUBMERSIBLE.width, SUBMERSIBLE.height);
 	}
 
@@ -70,9 +72,9 @@ var SUBMERSIBLE = function() {
 	function mouseClicked(event){
 		event.preventDefault();
 		var vector = new THREE.Vector3((event.offsetX / SUBMERSIBLE.width ) * 2 - 1, -(event.offsetY /SUBMERSIBLE.height ) * 2 + 1, 0.5);
-		projector.unprojectVector(vector, camera);
+		projector.unprojectVector(vector, SUBMERSIBLE.camera);
 
-		var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+		var raycaster = new THREE.Raycaster(SUBMERSIBLE.camera.position, vector.sub(SUBMERSIBLE.camera.position).normalize());
 		
 		var intersects = raycaster.intersectObjects(SUBMERSIBLE.scene.children);
 		if(intersects.length > 0) {
@@ -90,7 +92,8 @@ var SUBMERSIBLE = function() {
 		if(SUBMERSIBLE.dev) {
 			stats.update();
 		}
-		renderer.render(SUBMERSIBLE.scene, camera);
+		renderer.render(SUBMERSIBLE.scene, SUBMERSIBLE.camera);
+		SUBMERSIBLE.fishCollection.update();
 	}
 
 	//API//////////////////////////////////////////////////////////////////////
