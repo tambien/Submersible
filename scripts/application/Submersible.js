@@ -38,7 +38,7 @@ var SUBMERSIBLE = function() {
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
 		//the renderer
-		renderer = new THREE.WebGLRenderer();
+		renderer = new THREE.CanvasRenderer();
 		$container.append(renderer.domElement);
 		//initialize the size
 		sizeTHREE();

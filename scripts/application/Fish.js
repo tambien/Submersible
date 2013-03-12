@@ -64,7 +64,7 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		var image = THREE.ImageUtils.loadTexture("./images/" + this.model.get("image"), new THREE.UVMapping(), function() {
 			var material = new THREE.MeshBasicMaterial({
 				map : image,
-				transparent : true, 
+				transparent : true,
 				side : THREE.DoubleSide,
 			})
 			var size = self.model.get("imgSize");
@@ -75,16 +75,18 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		});
 	},
 	render : function(model) {
-		this.sprite.position = this.model.get("position");
-		//get the direction angles
-		var directionVector = this.model.get("direction");
-		var x = directionVector.x;
-		var z = directionVector.y;
-		var y = directionVector.z;
-		var phi = Math.atan(z / Math.sqrt(x * x + y * y));
-		var theta = -Math.atan2(y, x);
-		this.sprite.rotation.z = phi + this.model.get("pitch");
-		//don't let the fish point directly at the camera
-		this.sprite.rotation.y = theta + this.model.get("yaw");
+		if(this.sprite) {
+			this.sprite.position = this.model.get("position");
+			//get the direction angles
+			var directionVector = this.model.get("direction");
+			var x = directionVector.x;
+			var z = directionVector.y;
+			var y = directionVector.z;
+			var phi = Math.atan(z / Math.sqrt(x * x + y * y));
+			var theta = -Math.atan2(y, x);
+			this.sprite.rotation.z = phi + this.model.get("pitch");
+			//don't let the fish point directly at the camera
+			this.sprite.rotation.y = theta + this.model.get("yaw");
+		}
 	}
 });
