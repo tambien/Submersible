@@ -8,6 +8,9 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 	
 	update : function(){
 		//update each of the fish with a sinusoidal timestep
+		this.forEach(function(model){
+			model.move();
+		})
 	}
 	
 });

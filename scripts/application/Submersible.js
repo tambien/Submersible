@@ -22,6 +22,8 @@ var SUBMERSIBLE = function() {
 		bindEvents();
 		//make a fish
 		SUBMERSIBLE.fishCollection = new SUBMERSIBLE.FishCollection();
+		var fish = new SUBMERSIBLE.Fish();
+		SUBMERSIBLE.fishCollection.add(fish);
 		//start the drawing
 		render();
 	}
