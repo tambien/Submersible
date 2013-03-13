@@ -22,8 +22,8 @@ var SUBMERSIBLE = function() {
 		bindEvents();
 		//make a fish
 		SUBMERSIBLE.fishCollection = new SUBMERSIBLE.FishCollection();
-		var fish = new SUBMERSIBLE.Fish();
-		SUBMERSIBLE.fishCollection.add(fish);
+		//fill the collection
+		fillCollection();
 		//start the drawing
 		render();
 	}
@@ -33,7 +33,7 @@ var SUBMERSIBLE = function() {
 	var projector, renderer;
 
 	function setupTHREE() {
-		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(30, 4 / 3, 1, 10000);
+		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(10, 4 / 3, 1, 10000);
 		SUBMERSIBLE.camera.position.set(0, 0, 1000);
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
@@ -63,26 +63,38 @@ var SUBMERSIBLE = function() {
 			$container.append(stats.domElement);
 		}
 	}
-	
+
 	//EVENTS/////////////////////////////////////////////////////////////////////
-	
-	function bindEvents(){
+
+	function bindEvents() {
 		$(window).resize(sizeTHREE);
 		$container.click(mouseClicked);
 	}
-	
-	function mouseClicked(event){
+
+	function mouseClicked(event) {
 		event.preventDefault();
-		var vector = new THREE.Vector3((event.offsetX / SUBMERSIBLE.width ) * 2 - 1, -(event.offsetY /SUBMERSIBLE.height ) * 2 + 1, 0.5);
+		var vector = new THREE.Vector3((event.offsetX / SUBMERSIBLE.width ) * 2 - 1, -(event.offsetY / SUBMERSIBLE.height ) * 2 + 1, 0.5);
 		projector.unprojectVector(vector, SUBMERSIBLE.camera);
 
 		var raycaster = new THREE.Raycaster(SUBMERSIBLE.camera.position, vector.sub(SUBMERSIBLE.camera.position).normalize());
-		
+
 		var intersects = raycaster.intersectObjects(SUBMERSIBLE.scene.children);
 		if(intersects.length > 0) {
 			var intersected = intersects[0].object;
-			if (intersected.onclick){
+			if(intersected.onclick) {
 				intersected.onclick();
+			}
+		}
+	}
+
+	//FISH COLLECTION////////////////////////////////////////////////////////////
+
+	function fillCollection() {
+		for(var fishNum = 0; fishNum < SUBMERSIBLE.Fishes.length; fishNum++) {
+			var fish = SUBMERSIBLE.Fishes[fishNum];
+			for(var i = 0; i < fish.count; i++) {
+				var f = new SUBMERSIBLE.Fish(fish.attributes, fish.options);
+				SUBMERSIBLE.fishCollection.add(f);
 			}
 		}
 	}

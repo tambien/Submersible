@@ -57,6 +57,21 @@ var INTERPOLATE = function() {
 		}
 		return ret;
 	}
+	//since it'll be used a lot
+	var pi2 = Math.PI * 2;
+	/*
+	 * scale a value sinusoidally
+	 */
+	var scaleSine = function(value, min, max, minScale, maxScale, clip) {
+		//get the period
+		var period = max - min;
+		if(period === 0)
+			return;
+		period = pi2 / period;
+		var sine = Math.sin(period * value);
+		var ret = scale(sine, -1, 1, minScale, maxScale, clip);
+		return ret;
+	}
 	/*
 	 * ensures that value is between min and max
 	 */
@@ -73,5 +88,6 @@ var INTERPOLATE = function() {
 		linearInt : scaleInt,
 		logithimic : scaleLog,
 		exponential : scaleExp,
+		sinusoidal : scaleSine,
 	}
 }();
