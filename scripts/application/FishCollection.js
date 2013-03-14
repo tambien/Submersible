@@ -10,13 +10,13 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 		var now = performance.now();
 		var timestep = now - this.previousTime;
 		//normalize the timestep
-		timestep /= 16;
+		var scalar =  timestep / 16;
 		this.previousTime = now;
 		//update each of the fish with a sinusoidal timestep
 		var pi2 = Math.PI * 2;
 		var self = this;
 		this.forEach(function(model) {
-			model.update(timestep, now);
+			model.update(timestep, scalar, now);
 		});
 		//periodically add a fish to the scene
 		if (RANDOM.getFloat() > .9){

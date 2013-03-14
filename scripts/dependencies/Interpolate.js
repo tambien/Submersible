@@ -6,7 +6,7 @@ var INTERPOLATE = function() {
 	var scale = function(value, min, max, minScale, maxScale, clip) {
 		var ret = minScale + (value - min) / (max - min) * (maxScale - minScale);
 		if(clip) {
-			ret = clip(ret, minScale, maxScale);
+			ret = clipValue(ret, minScale, maxScale);
 		}
 		return ret;
 	}
@@ -34,7 +34,7 @@ var INTERPOLATE = function() {
 		var scaled = (maxv - minv) / (max - min);
 		var ret = Math.exp(minv + scaled * (value - min));
 		if(clip) {
-			ret = clip(ret, minScale, maxScale);
+			ret = clipValue(ret, minScale, maxScale);
 		}
 		return ret;
 	}
@@ -53,7 +53,7 @@ var INTERPOLATE = function() {
 		var scaled = (maxv - minv) / (max - min);
 		var ret = (Math.log(value) - minv) / scaled + min;
 		if(clip) {
-			ret = clip(ret, min, max);
+			ret = clipValue(ret, min, max);
 		}
 		return ret;
 	}
@@ -75,7 +75,7 @@ var INTERPOLATE = function() {
 	/*
 	 * ensures that value is between min and max
 	 */
-	var clip = function(value, min, max) {
+	var clipValue = function(value, min, max) {
 		if(value < min)
 			return min;
 		if(value > max)

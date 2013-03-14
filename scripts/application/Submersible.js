@@ -15,6 +15,8 @@ var SUBMERSIBLE = function() {
 
 	function initialize() {
 		$container = $("#container");
+		//make the model
+		SUBMERSIBLE.model = new SUBMERSIBLE.Model();
 		//setup the rendering context
 		setupTHREE();
 		setupStats();
@@ -33,12 +35,13 @@ var SUBMERSIBLE = function() {
 	var projector, renderer;
 
 	function setupTHREE() {
-		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(10, 4 / 3, 1, 10000);
+		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(25, 4 / 3, 1, 10000);
 		SUBMERSIBLE.camera.position.set(0, 0, 1000);
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
 		//the renderer
 		renderer = new THREE.CanvasRenderer();
+		//renderer = new THREE.WebGLRenderer();
 		$container.append(renderer.domElement);
 		//initialize the size
 		sizeTHREE();
@@ -69,6 +72,17 @@ var SUBMERSIBLE = function() {
 	function bindEvents() {
 		$(window).resize(sizeTHREE);
 		$container.click(mouseClicked);
+		//listen for the arrow keys
+		$(document).keydown(function(e) {
+			//arrow up
+			if(e.keyCode === 38) {
+				SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") - 1);
+				return false;
+			} else if(e.keyCode === 40) {
+				SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") + 1);
+				return false;
+			}
+		});
 	}
 
 	function mouseClicked(event) {
@@ -108,6 +122,7 @@ var SUBMERSIBLE = function() {
 		}
 		renderer.render(SUBMERSIBLE.scene, SUBMERSIBLE.camera);
 		SUBMERSIBLE.fishCollection.update();
+		TWEEN.update();
 	}
 
 	//API//////////////////////////////////////////////////////////////////////
@@ -117,6 +132,48 @@ var SUBMERSIBLE = function() {
 	};
 
 }();
+
+SUBMERSIBLE.Model = Backbone.Model.extend({
+	defaults : {
+		"zone" : 0,
+		"speed" : 10,
+	},
+	initialize : function(attributes, options) {
+		this.on("change:zone", this.moveZones);
+	},
+	validate : function(attributes) {
+		if(attributes.zone < 0 || attributes.zone > 2) {
+			return false;
+		}
+	},
+	moveZones : function(model, zone) {
+		//find the zone change
+		var diff = Math.abs(zone - model.previous("zone"));
+		var $seawall = $("#seaWall");
+		//var scrollTop = zone * seawall.height();
+		var animationTime = 4000 * diff;
+		/*
+		$("#seaWall").stop().animate({
+			scrollTop : scrollTop,
+		}, animationTime * diff, 'easeInOutQuad');
+		*/
+		//tween the camera as well
+		//
+		if(this.cameraTween) {
+			this.cameraTween.stop();
+		}
+		this.cameraTween = new TWEEN.Tween({
+			scrollTop : $seawall.scrollTop(),
+			cameraY : SUBMERSIBLE.camera.position.y,
+		}).to({
+			scrollTop : zone * $seawall.height(),
+			cameraY : -(zone * 3000),
+		}, animationTime).easing(TWEEN.Easing.Quadratic.InOut).onUpdate(function() {
+			$seawall.scrollTop(this.scrollTop);
+			SUBMERSIBLE.camera.position.setY(this.cameraY);
+		}).start();
+	}
+})
 
 //development version
 SUBMERSIBLE.dev = true;
