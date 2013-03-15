@@ -15,10 +15,9 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			mass : 15, //in kg
 			speed : 3, //in km/h
 			//position and movement
-			direction : new THREE.Vector3(randomXDirection, RANDOM.getFloat(-.1, .1), RANDOM.getFloat(0, .5)),
+			direction : new THREE.Vector3(randomXDirection, RANDOM.getFloat(-.1, .1), .3),
 			position : new THREE.Vector3(RANDOM.getInt(-1000, 1000), RANDOM.getInt(-500, 500), -10000),
 			acceleration : 0,
-			velocity : 3,
 			//the speed multiplier
 			rate : 1,
 			//the pitch and yaw of the fish
@@ -47,11 +46,44 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		if(options && options.swim) {
 			this.swim = options.swim;
 		}
+		this.on("change:visible", this.putOnScreen);
 		//the view
 		this.view = new SUBMERSIBLE.Fish.View({
 			model : this,
 		})
 	},
+	//ADD TO SCREEN////////////////////////////////////////////////////////////
+	putOnScreen : function(model, visible) {
+		if(visible) {
+			//either put it way back
+			var zonePos = -(this.get("palegicZone") * SUBMERSIBLE.model.get("zoneDifference"));
+			var dir = this.get("direction");
+			var posZ = RANDOM.getInt(-10000, -1000);
+			//everything else is based on the z position
+			var randY = INTERPOLATE.linear(posZ, -10000, -1000, 2000, 100);
+			var randX =  INTERPOLATE.linear(posZ, -10000, -1000, 500, 3000);
+			//if(RANDOM.flipCoin()) {
+			this.set("position", new THREE.Vector3(RANDOM.getInt(-randX, randX), RANDOM.getInt(-randY, randY) + zonePos, posZ));
+			dir.setZ(INTERPOLATE.linear(posZ, -10000, -1000, .35, .01));
+			//} else {
+			//or on the side
+
+			/*
+			 if (RANDOM.flipCoin()){
+			 //going left from teh right side
+			 this.set("position", new THREE.Vector3(2000, RANDOM.getInt(-100, 100) + zonePos, ));
+			 dir.setX(RANDOM.getFloat(-0.2, -1))
+			 } else {
+			 //going right from the left side
+			 this.set("position", new THREE.Vector3(-2000, RANDOM.getInt(-100, 100) + zonePos, RANDOM.getInt(-2000, -1000)));
+			 dir.setX(RANDOM.getFloat(0.2, 1))
+			 }
+			 dir.setZ(.1);
+			 }
+			 */
+		}
+	},
+	//UPDATE FUNCTIONS/////////////////////////////////////////////////////////
 	update : function(timestep, scalar, time) {
 		var rate = this.get("rate");
 		this.move(scalar * rate);
@@ -84,7 +116,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		var position = this.get("position");
 		var direction = this.get("direction").clone().normalize();
 		var acceleration = this.get('acceleration');
-		var moveAmount = (this.get("velocity") + acceleration) * step
+		var moveAmount = (this.get("speed") + acceleration) * step
 		//update acceleration
 		if(acceleration < .05) {
 			acceleration = 0;
@@ -100,15 +132,15 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		//move the submarine forward
 		position.add(new THREE.Vector3(0, 0, SUBMERSIBLE.model.get("speed") * step));
 		//if the object is off the screen, make it invisible
-		if(Math.abs(position.x) > 1500 || Math.abs(position.y) > 1500 || Math.abs(position.z) > 1500) {
+		if(position.z > 1500) {
 			this.set("visible", false);
 		}
 		//with some probability change direction and randomly accelerate
 		if(RANDOM.getFloat() > (.9999 / step)) {
-			this.set("acceleration", RANDOM.getFloat(this.get("speed")));
-			var changeDirection = new THREE.Vector3(RANDOM.getFloat(0.2, 1), RANDOM.getFloat(-.1, .1), RANDOM.getFloat(0, .5));
+			//this.set("acceleration", RANDOM.getFloat(this.get("speed")));
+			var changeDirection = new THREE.Vector3(RANDOM.getFloat(-1, 1), RANDOM.getFloat(-.1, .1), 0);
 			//divide by the mass
-			changeDirection.divideScalar(this.get("mass"));
+			changeDirection.divideScalar(this.get("mass") * 10);
 			this.get("direction").add(changeDirection);
 			//this.set("direction", direction)
 		}

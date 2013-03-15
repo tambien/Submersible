@@ -35,13 +35,18 @@ var SUBMERSIBLE = function() {
 	var projector, renderer;
 
 	function setupTHREE() {
-		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(25, 4 / 3, 1, 10000);
+		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(15, 4 / 3, 1, 10000);
 		SUBMERSIBLE.camera.position.set(0, 0, 1000);
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
 		//the renderer
-		renderer = new THREE.CanvasRenderer();
-		//renderer = new THREE.WebGLRenderer();
+		if(Detector.webgl) {
+			renderer = new THREE.WebGLRenderer();
+		} else if(Detector.canvas) {
+			renderer = new THREE.CanvasRenderer();
+		} else {
+			alert("sorry, get a new browser");
+		}
 		$container.append(renderer.domElement);
 		//initialize the size
 		sizeTHREE();
@@ -136,7 +141,10 @@ var SUBMERSIBLE = function() {
 SUBMERSIBLE.Model = Backbone.Model.extend({
 	defaults : {
 		"zone" : 0,
-		"speed" : 10,
+		//the space between zones
+		"zoneDifference" : 3000,
+		//the speed of the sub
+		"speed" : 2,
 	},
 	initialize : function(attributes, options) {
 		this.on("change:zone", this.moveZones);
@@ -152,13 +160,7 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 		var $seawall = $("#seaWall");
 		//var scrollTop = zone * seawall.height();
 		var animationTime = 4000 * diff;
-		/*
-		$("#seaWall").stop().animate({
-			scrollTop : scrollTop,
-		}, animationTime * diff, 'easeInOutQuad');
-		*/
-		//tween the camera as well
-		//
+		var zoneDifference = this.get("zoneDifference");
 		if(this.cameraTween) {
 			this.cameraTween.stop();
 		}

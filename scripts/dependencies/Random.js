@@ -92,7 +92,7 @@ var RANDOM = function() {
 	 * pass in an array, and it will choose randomly one of the elements.
 	 */
 	var choose = function(array) {
-		return arg[randomInt(array.length)];
+		return array[randomInt(array.length)];
 	};
 	/*
 	 * sourced from http://snippets.dzone.com/posts/show/849
@@ -139,7 +139,12 @@ var RANDOM = function() {
 	var flipCoin = function() {
 		return random() < .5;
 	}
-	
+	/*
+	 * chooses between the two options
+	 */
+	var pickWhich = function(a, b) {
+		return flipCoin() ? a : b;
+	}
 	//API//////////////////////////////////////////////////////////////////////
 
 	return {
@@ -148,5 +153,6 @@ var RANDOM = function() {
 		flipCoin : flipCoin,
 		getInt : randomInt,
 		getFloat : randomFloat,
+		or : pickWhich,
 	}
 }();

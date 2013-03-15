@@ -3,13 +3,17 @@
  */
 SUBMERSIBLE.Fishes = [{
 	name : "simpleFish",
-	count : 0,
+	count : 100,
 	attributes : {
+		//specs
+		size : 80, 
+		mass : 3,
+		speed : 8,
 		image : "littleFish.png",
 		//the palegic zone 0 - 2
 		palegicZone : 0,
 		//the length of the swim stroke in seconds
-		gate : 2,
+		gate : .5,
 	},
 	options : {
 		swim : function(ramp) {
@@ -24,12 +28,15 @@ SUBMERSIBLE.Fishes = [{
 	}
 }, {
 	name : "jellyFishOne",
-	count : 0,
+	count : 10,
 	attributes : {
+		//specs
+		size : 200, 
+		mass : 5,
+		speed : 1,
 		image : "jelly0.png",
-		velocity : 2,
 		//the palegic zone 0 - 2 
-		palegicZone : 0,
+		palegicZone : 1,
 		//the length of the swim stroke in seconds
 		gate : 4,
 	},
@@ -57,7 +64,7 @@ SUBMERSIBLE.Fishes = [{
 		gifCount : 3,
 		gifDuration : 500,
 		//the palegic zone 0 - 2
-		palegicZone : 0,
+		palegicZone : 2,
 		//the length of the swim stroke in seconds
 		gate : 1.5,
 	},
