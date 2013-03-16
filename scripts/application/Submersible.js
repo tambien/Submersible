@@ -72,6 +72,20 @@ var SUBMERSIBLE = function() {
 		}
 	}
 
+	// Create a new Frustum object (for efficiency, do this only once)
+	var frustum = new THREE.Frustum();
+	// Helper matrix (for efficiency, do this only once)
+	var projScreenMatrix = new THREE.Matrix4();
+
+	function offscreenTest(object) {
+		// Set the matrix from camera matrices (which are updated on each renderer.render() call)
+		projScreenMatrix.multiplyMatrices(SUBMERSIBLE.camera.projectionMatrix, SUBMERSIBLE.camera.matrixWorldInverse);
+		// Update the frustum
+		frustum.setFromMatrix(projScreenMatrix);
+		// Test for visibility
+		return !frustum.intersectsObject(object)
+	}
+
 	//EVENTS/////////////////////////////////////////////////////////////////////
 
 	function bindEvents() {
@@ -81,10 +95,14 @@ var SUBMERSIBLE = function() {
 		$(document).keydown(function(e) {
 			//arrow up
 			if(e.keyCode === 38) {
-				SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") - 1);
+				SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") - 1, {
+					validate : true,
+				});
 				return false;
 			} else if(e.keyCode === 40) {
-				SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") + 1);
+				SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") + 1, {
+					validate : true,
+				});
 				return false;
 			}
 		});
@@ -134,6 +152,7 @@ var SUBMERSIBLE = function() {
 
 	return {
 		initialize : initialize,
+		offscreenTest : offscreenTest,
 	};
 
 }();
@@ -142,7 +161,7 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 	defaults : {
 		"zone" : 0,
 		//the space between zones
-		"zoneDifference" : 3000,
+		"zoneDifference" : 4000,
 		//the speed of the sub
 		"speed" : 2,
 	},
@@ -151,7 +170,7 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 	},
 	validate : function(attributes) {
 		if(attributes.zone < 0 || attributes.zone > 2) {
-			return false;
+			return 'not a valid zone';
 		}
 	},
 	moveZones : function(model, zone) {
@@ -159,7 +178,7 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 		var diff = Math.abs(zone - model.previous("zone"));
 		var $seawall = $("#seaWall");
 		//var scrollTop = zone * seawall.height();
-		var animationTime = 4000 * diff;
+		var animationTime = 5000 * diff;
 		var zoneDifference = this.get("zoneDifference");
 		if(this.cameraTween) {
 			this.cameraTween.stop();
@@ -169,7 +188,7 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 			cameraY : SUBMERSIBLE.camera.position.y,
 		}).to({
 			scrollTop : zone * $seawall.height(),
-			cameraY : -(zone * 3000),
+			cameraY : -(zone * zoneDifference),
 		}, animationTime).easing(TWEEN.Easing.Quadratic.InOut).onUpdate(function() {
 			$seawall.scrollTop(this.scrollTop);
 			SUBMERSIBLE.camera.position.setY(this.cameraY);
