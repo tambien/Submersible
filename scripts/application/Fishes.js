@@ -3,12 +3,14 @@
  */
 SUBMERSIBLE.Fishes = [{
 	name : "simpleFish",
-	count : 50,
+	//after how many seconds does one appear (on average)?
+	probability : Infinity,
 	attributes : {
 		//specs
 		size : 80,
 		mass : 3,
-		speed : 8,
+		speed : 10,
+		subdivision : "4n",
 		image : "littleFish.png",
 		//the palegic zone 0 - 2
 		palegicZone : [0, 0],
@@ -18,17 +20,21 @@ SUBMERSIBLE.Fishes = [{
 	options : {
 		swim : function(ramp) {
 			var yaw = INTERPOLATE.sinusoidal(ramp, 0, 1, -.1, .1);
-			this.set("yaw", yaw);
+			//this.set("yaw", yaw);
+			var opacity = INTERPOLATE.sinusoidal(ramp, 0, 1, 0, 1);
+			this.set("opacity", ramp);
 		},
 	}
 }, {
 	name : "jellyFishOne",
-	count : 20,
+	//after how many seconds does one appear (on average)?
+	probability : Infinity,
 	attributes : {
 		//specs
 		size : 200,
 		mass : 5,
 		speed : 1,
+		subdivision : "2n",
 		image : "jelly0.png",
 		//the palegic zone 0 - 2
 		palegicZone : [0, 2],
@@ -44,20 +50,23 @@ SUBMERSIBLE.Fishes = [{
 			var swayRamp = (ramp + .95) % 1;
 			var sway = INTERPOLATE.sinusoidal(swayRamp, 0, 1, .5, -.5);
 			this.set("vertical", sway);
+			var opacity = INTERPOLATE.sinusoidal(ramp, 0, 1, 0, 1);
+			this.set("opacity", ramp);
 		},
 	}
 }, {
 	name : "anglerfish",
-	count : 20,
+	//after how many seconds does one appear (on average)?
+	probability : Infinity,
 	attributes : {
 		//specs
 		size : 150,
 		mass : 10,
 		speed : 3,
+		subdivision : "4n",
 		//images
 		image : "angler.png",
 		gifCount : 3,
-		gifDuration : 500,
 		//the palegic zone 0 - 2
 		palegicZone : [2, 2],
 		//the length of the swim stroke in seconds
@@ -73,6 +82,48 @@ SUBMERSIBLE.Fishes = [{
 			var swayRamp = (ramp + .0) % 1;
 			var sway = INTERPOLATE.sinusoidal(swayRamp, 0, 1, -.2, .2);
 			this.set("vertical", sway);
+			var opacity = INTERPOLATE.sinusoidal(ramp, 0, 1, 0, 1);
+			this.set("opacity", ramp);
 		},
 	}
+}, 
+{
+	name : "shark",
+	//after how many seconds does one appear (on average)?
+	probability : 2,
+	attributes : {
+		//specs
+		size : 350,
+		mass : 100,
+		speed : 6,
+		subdivision : "4n",
+		//images
+		image : "crayon-shark-sequence.png",
+		texture : THREE.ImageUtils.loadTexture("./images/" + "crayon-shark-sequence.png"),
+		gifCount : 6,
+		//the palegic zone 0 - 3
+		palegicZone : [0, 0],
+		//the length of the swim stroke in seconds
+		gate : 1.5,
+	},
+},
+{
+	name : "jellyTwo",
+	//after how many seconds does one appear (on average)?
+	probability : 1,
+	attributes : {
+		//specs
+		size : 200,
+		mass : 10,
+		speed : 2,
+		subdivision : "2n",
+		//images
+		image : "ink-jelly-sequence.png",
+		texture : THREE.ImageUtils.loadTexture("./images/" + "ink-jelly-sequence.png"),
+		gifCount : 6,
+		//the palegic zone 0 - 3
+		palegicZone : [0, 0],
+		//the length of the swim stroke in seconds
+		gate : 1.5,
+	},
 }];

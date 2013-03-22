@@ -10,6 +10,8 @@ $(function() {
 var SUBMERSIBLE = function() {
 
 	var $container;
+	
+	//var audioContext = new webkit;
 
 	//INITIALIZATION///////////////////////////////////////////////////////////
 
@@ -17,6 +19,12 @@ var SUBMERSIBLE = function() {
 		$container = $("#container");
 		//make the model
 		SUBMERSIBLE.model = new SUBMERSIBLE.Model();
+		//setup the audio context
+		makeAudioContext();
+		//the metronome
+		SUBMERSIBLE.metronome = new SUBMERSIBLE.Metronome();
+		//for now just start the metronome right away
+		SUBMERSIBLE.metronome.start();
 		//setup the rendering context
 		setupTHREE();
 		setupStats();
@@ -29,18 +37,30 @@ var SUBMERSIBLE = function() {
 		//start the drawing
 		render();
 	}
+	
+	//AUDIO CONTEXT////////////////////////////////////////////////////////////
+	
+	var audioContext;
+	
+	function makeAudioContext(){
+		audioContext = new webkitAudioContext();
+		SUBMERSIBLE.context = audioContext;
+		SUBMERSIBLE.output = audioContext.createGainNode();
+		SUBMERSIBLE.output.connect(audioContext.destination);
+	}
 
 	//THREE////////////////////////////////////////////////////////////////////
 
 	var projector, renderer;
 
 	function setupTHREE() {
-		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(15, 4 / 3, 1, 10000);
+		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(18, 4 / 3, 1, 10000);
 		SUBMERSIBLE.camera.position.set(0, 0, 1000);
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
 		//the renderer
 		if(Detector.webgl) {
+		//if(false) {
 			renderer = new THREE.WebGLRenderer();
 		} else if(Detector.canvas) {
 			renderer = new THREE.CanvasRenderer();
@@ -90,7 +110,7 @@ var SUBMERSIBLE = function() {
 
 	function bindEvents() {
 		$(window).resize(sizeTHREE);
-		$container.click(mouseClicked);
+		//$container.click(mouseClicked);
 		//listen for the arrow keys
 		$(document).keydown(function(e) {
 			//arrow up
@@ -127,6 +147,7 @@ var SUBMERSIBLE = function() {
 	//FISH COLLECTION////////////////////////////////////////////////////////////
 
 	function fillCollection() {
+		/*
 		for(var fishNum = 0; fishNum < SUBMERSIBLE.Fishes.length; fishNum++) {
 			var fish = SUBMERSIBLE.Fishes[fishNum];
 			for(var i = 0; i < fish.count; i++) {
@@ -134,6 +155,7 @@ var SUBMERSIBLE = function() {
 				SUBMERSIBLE.fishCollection.add(f);
 			}
 		}
+		*/
 	}
 
 	//DRAW LOOP//////////////////////////////////////////////////////////////////
@@ -163,7 +185,7 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 		//the space between zones
 		"zoneDifference" : 4000,
 		//the speed of the sub
-		"speed" : 2,
+		"speed" : 8,
 	},
 	initialize : function(attributes, options) {
 		this.on("change:zone", this.moveZones);

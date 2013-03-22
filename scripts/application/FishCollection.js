@@ -12,17 +12,17 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 		//normalize the timestep
 		var scalar = timestep / 16;
 		this.previousTime = now;
-		//update each of the fish with a sinusoidal timestep
-		var pi2 = Math.PI * 2;
-		var self = this;
-		var visibles = this.where({
-			visible : true,
-		})
+		this.forEach(function(model) {
+			model.moveSubmersible(scalar);
+		});
+		this.addFish(timestep);
+		/*
 		_.forEach(visibles, function(model) {
 			model.update(timestep, scalar, now);
 		});
+		
 		//periodically add a fish to the scene
-		if(RANDOM.getFloat() > .9) {
+		if(RANDOM.getFloat() > .99) {
 			//make a new fish appear
 			var notVisible = this.where({
 				visible : false,
@@ -32,10 +32,20 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 				chosen.set("visible", true);
 			}
 		}
+		*/
 	},
-	periodicSine : function(period, theta) {
-		return Math.sin(theta);
-	},
+	addFish : function(step) {
+		for(var fishNum = 0; fishNum < SUBMERSIBLE.Fishes.length; fishNum++) {
+			var fish = SUBMERSIBLE.Fishes[fishNum];
+			var prob = fish.probability * 1000;
+			var onceAsecond = 1 / prob;
+			if(RANDOM.getFloat() < (onceAsecond * step)) {
+				//add that fish to the collection
+				var f = new SUBMERSIBLE.Fish(fish.attributes, fish.options);
+				this.add(f);
+			}
+		}
+	}
 });
 
 //PERFORMANCE NOW POLYFIL from http://gent.ilcore.com/2012/06/better-timer-for-javascript.html
