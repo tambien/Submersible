@@ -10,7 +10,7 @@ $(function() {
 var SUBMERSIBLE = function() {
 
 	var $container;
-	
+
 	//var audioContext = new webkit;
 
 	//INITIALIZATION///////////////////////////////////////////////////////////
@@ -30,19 +30,20 @@ var SUBMERSIBLE = function() {
 		setupStats();
 		//bind the basic events
 		bindEvents();
-		//make a fish
-		SUBMERSIBLE.fishCollection = new SUBMERSIBLE.FishCollection();
-		//fill the collection
-		fillCollection();
-		//start the drawing
-		render();
+		//load all of the fish images
+		loadFishImages(function() {
+			//when all the images are loaded, make the collection
+			SUBMERSIBLE.fishCollection = new SUBMERSIBLE.FishCollection();
+			//start the drawing when everything is loaded
+			render();
+		});
 	}
-	
+
 	//AUDIO CONTEXT////////////////////////////////////////////////////////////
-	
+
 	var audioContext;
-	
-	function makeAudioContext(){
+
+	function makeAudioContext() {
 		audioContext = new webkitAudioContext();
 		SUBMERSIBLE.context = audioContext;
 		SUBMERSIBLE.output = audioContext.createGainNode();
@@ -54,15 +55,12 @@ var SUBMERSIBLE = function() {
 	var projector, renderer;
 
 	function setupTHREE() {
-		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(18, 4 / 3, 1, 10000);
+		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(30, 4 / 3, 1, 10000);
 		SUBMERSIBLE.camera.position.set(0, 0, 1000);
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
 		//the renderer
-		if(Detector.webgl) {
-		//if(false) {
-			renderer = new THREE.WebGLRenderer();
-		} else if(Detector.canvas) {
+		if(Detector.canvas) {
 			renderer = new THREE.CanvasRenderer();
 		} else {
 			alert("sorry, get a new browser");
@@ -146,16 +144,39 @@ var SUBMERSIBLE = function() {
 
 	//FISH COLLECTION////////////////////////////////////////////////////////////
 
+	function loadFishImages(callback) {
+		//var images = {};
+		var loadedImages = 0;
+		var numImages = SUBMERSIBLE.Fishes.length;
+		// get num of sources
+		for(var fishNum = 0; fishNum < numImages; fishNum++) {
+			var fish = SUBMERSIBLE.Fishes[fishNum];
+			var imgName = fish.attributes.image;
+			fish.attributes.image = new Image();
+			fish.attributes.image.src = "./images/" + imgName;
+			fish.attributes.image.onload = function(fish) {
+				return function() {
+					fish.attributes.imageWidth = this.width;
+					fish.attributes.imageHeight = this.height;
+					if(++loadedImages >= numImages) {
+						callback();
+						//console.log("all loaded");
+					}
+				}
+			}(fish);
+		}
+	}
+
 	function fillCollection() {
 		/*
-		for(var fishNum = 0; fishNum < SUBMERSIBLE.Fishes.length; fishNum++) {
-			var fish = SUBMERSIBLE.Fishes[fishNum];
-			for(var i = 0; i < fish.count; i++) {
-				var f = new SUBMERSIBLE.Fish(fish.attributes, fish.options);
-				SUBMERSIBLE.fishCollection.add(f);
-			}
-		}
-		*/
+		 for(var fishNum = 0; fishNum < SUBMERSIBLE.Fishes.length; fishNum++) {
+		 var fish = SUBMERSIBLE.Fishes[fishNum];
+		 for(var i = 0; i < fish.count; i++) {
+		 var f = new SUBMERSIBLE.Fish(fish.attributes, fish.options);
+		 SUBMERSIBLE.fishCollection.add(f);
+		 }
+		 }
+		 */
 	}
 
 	//DRAW LOOP//////////////////////////////////////////////////////////////////

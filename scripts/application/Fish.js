@@ -32,6 +32,9 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			//looks
 			color : new THREE.Color(0xffffff),
 			image : "littleFish.png",
+			//these get set in the loader
+			imageWidth : 0,
+			imageHeight : 0,
 			//if the object is in the foreground or background
 			foreground : RANDOM.flipCoin(),
 			//a random seed value which will differentiate the fishes movements
@@ -40,6 +43,8 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			visible : false,
 			//for gif'ing a png
 			gifCount : 1,
+			//increments the image position for gif-type images
+			gifOffset : 0,
 			//DEPRECATED, use subdivision instead
 			gifDuration : 200,
 			//music parameters
@@ -50,9 +55,11 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 	},
 	initialize : function(attributes, options) {
 		//paddle function and sound function are passed in through options
+		/*
 		if(options && options.swim) {
-			this.swim = options.swim;
+		this.swim = options.swim;
 		}
+		*/
 		//set the position and direction
 		this.putOnScreen();
 		this.getDirectionVectorFromAngles();
@@ -72,14 +79,13 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		var zoneMin = -(this.get("palegicZone")[0] * SUBMERSIBLE.model.get("zoneDifference")) - zoneDiff / 4;
 		var zoneMax = -(this.get("palegicZone")[1] * SUBMERSIBLE.model.get("zoneDifference")) + zoneDiff / 4;
 		var yPos = RANDOM.getInt(zoneMin, zoneMax);
-
 		if(this.get("foreground")) {
 			//either coming from the right or left side
 			if(RANDOM.flipCoin()) {
 				//going right from the left side
-				this.set("position", new THREE.Vector3(-1400, yPos, RANDOM.getInt(-4000, -1000)));
+				this.set("position", new THREE.Vector3(-2400, yPos, RANDOM.getInt(-4000, -1000)));
 			} else {
-				this.set("position", new THREE.Vector3(1400, yPos, RANDOM.getInt(-4000, -1000)));
+				this.set("position", new THREE.Vector3(2400, yPos, RANDOM.getInt(-4000, -1000)));
 				this.set("theta", Math.PI - this.get("theta"));
 			}
 			//foreground fish can also be swimming away from the submersible
@@ -87,7 +93,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 				this.set("theta", -this.get("theta"));
 			}
 		} else {
-			this.set("position", new THREE.Vector3(RANDOM.getInt(-2400, 2400), yPos, -10001));
+			this.set("position", new THREE.Vector3(RANDOM.getInt(-3000, 3000), yPos, -10001));
 			//could be swimming left or right
 			if(RANDOM.flipCoin()) {
 				this.set("theta", Math.PI - this.get("theta"));
@@ -117,24 +123,15 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		this.set("audible", false);
 	},
 	//UPDATE FUNCTIONS/////////////////////////////////////////////////////////
-	update : function(timestep, scalar, time) {
+	update : function(scalar) {
 		//var rate = this.get("rate");
 		//move the fish
-		this.move(scalar);
-		//see if it's moved off screen
-		this.testOffScreen();
-		//make the ramp from the time and gate
-		var period = this.get("gate") * 1000;
-		//augment it by the rate
-		//period /= rate;
-		var ramp = (time + this.get("seedValue")) % period;
-		//make it between 0 - 1;
-		ramp = ramp / period;
-		this.swim(ramp);
-		//update the gif
-		if(this.view.gif) {
-			this.view.gif.update(this.get("seedValue"));
-		}
+		//this.move(scalar);
+		//move the submarine
+		this.moveSubmersible(scalar);
+		//update the view
+		//this.view.positionFish(this);
+
 	},
 	moveSubmersible : function(scalar) {
 		var pos = this.get('position');
@@ -145,14 +142,10 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		var offbeat = this.get("offbeat") ? 1 : 0;
 		if(beatNum % 2 === offbeat) {
 			//this.randomChange(SUBMERSIBLE.metronome.subdivisionToMilliseconds(this.get("subdivision")));
-			setTimeout(function(self) {
-				self.move();
-				self.testOffScreen();
-				//update the gif
-				if(self.view.gif) {
-					self.view.gif.update(self.get("seedValue"));
-				}
-			}, delayTime, this);
+			//setTimeout(function(self) {
+			//this.move();
+			//this.testOffScreen();
+			//}, delayTime, this);
 		}
 	},
 	//called when the fish is on the screen
@@ -160,26 +153,28 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 	swim : function(ramp) {
 
 	},
-	move : function(step) {
-		var beatDuration = SUBMERSIBLE.metronome.subdivisionToMilliseconds(this.get("subdivision"));
+	move : function() {
 		var pos = this.get('position');
-		pos.add(this.get('direction'));
-		//pos.z += SUBMERSIBLE.model.get("speed") * beatDuration / 16;
+		var dir = this.get("direction");
+		pos.add(dir);
+		this.testOffScreen();
 	},
 	//test if it needs to be invisible
 	testOffScreen : function() {
 		var position = this.get('position');
-		if(position.x > 4000 || position.x < -4000) {
+		if(position.x > 5000 || position.x < -5000) {
 			this.remove();
-		} else if(position.z > 1200 || position.z < -10000) {
+		} else if(position.z > 1200 || position.z < -11000) {
 			this.remove();
 		}
-		//test if it's in the camera view to set the audibility
-		if(SUBMERSIBLE.offscreenTest(this.view.sprite)) {
-			this.set("audible", false);
-		} else {
-			this.set("audible", true);
-		}
+		/*
+		 //test if it's in the camera view to set the audibility
+		 if(SUBMERSIBLE.offscreenTest(this.view.sprite)) {
+		 this.set("audible", false);
+		 } else {
+		 this.set("audible", true);
+		 }
+		 */
 	},
 	randomChange : function(step) {
 		//once a second approximately
@@ -219,64 +214,48 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		var self = this;
 		//get the gif info
 		var gifCount = this.model.get('gifCount');
-		var image = THREE.ImageUtils.loadTexture("./images/" + this.model.get("image"), new THREE.UVMapping(), function() {
-			image.needsUpdate = true
-			if(gifCount > 1) {
-				self.gif = new TextureAnimator(image, gifCount, 1, gifCount);
-			}
-			var material = new THREE.MeshBasicMaterial({
-				map : image,
-				transparent : true,
-				side : THREE.DoubleSide,
-				overdraw : true,
-				//blending : THREE.AdditiveAlphaBlending,
-			})
-			var size = self.model.get("size");
-			self.sprite = new THREE.Mesh(new THREE.PlaneGeometry(size, size), material);
-			//self.sprite.dynamic = true
-			SUBMERSIBLE.scene.add(self.sprite);
-			//render for the first time
-			self.positionFish(self.model);
-			//listen for changes
-			//fade the sprite in on the beat
-			var changeString = "change:" + self.model.get("subdivision");
-			self.listenTo(SUBMERSIBLE.metronome, changeString, self.beat);
-		});
+		var drawProgram = this.drawImage.bind(this);
+		this.sprite = new THREE.Particle(new THREE.ParticleCanvasMaterial({
+			color : Math.random() * 0x808080 + 0x808080,
+			program : drawProgram,
+		}));
+		var ratio = this.model.get("imageHeight") / (this.model.get("imageWidth") / this.model.get("gifCount"));
+		this.sprite.scale.x = this.model.get("size");
+		this.sprite.scale.y = this.model.get("size") * ratio;
+		SUBMERSIBLE.scene.add(this.sprite);
+		//position the fish initially
+		this.positionFish(this.model);
+		//listen to the beat changes
+		var changeString = "change:" + this.model.get("subdivision");
+		this.listenTo(SUBMERSIBLE.metronome, changeString, this.beat);
+	},
+	//draws the image in the context
+	drawImage : function(context) {
+		//why do they come out upside down?
+		var model = this.model;
+		var gifOffset = model.get("gifOffset");
+		var gifCount = model.get("gifCount");
+		var imageWidth = model.get("imageWidth") / gifCount;
+		var imagePosition = gifOffset * imageWidth;
+
+		context.save();
+		context.translate(0.5, 0.5);
+		var direction = model.get("direction");
+		if(direction.x < 0) {
+			context.scale(-1, -1);
+		} else {
+			context.scale(1, -1);
+		}
+		context.drawImage(model.get("image"), imagePosition, 0, imageWidth, model.get("imageHeight"), 0, 0, 1, 1);
+		context.restore();
 	},
 	positionFish : function(model) {
 		if(this.sprite) {
 			var position = this.model.get("position");
 			this.sprite.position = position;
-			var theta = model.get("theta");
-			this.sprite.rotation.y = theta;
-			//if it's moving left, flip the phi
 			var phi = model.get("phi");
-			var direction = this.model.get("direction");
-			if(direction.x < 0) {
-				phi = -phi;
-			}
-			this.sprite.rotation.z = phi
-
+			this.sprite.rotation.z = -phi
 			/*
-			 //get the direction angles
-			 var directionVector = this.model.get("direction");
-			 var x = directionVector.x;
-			 var z = directionVector.y;
-			 var y = directionVector.z;
-			 var phi = Math.atan(z / Math.sqrt(x * x + y * y));
-			 var theta = -Math.atan2(y, x);
-			 this.sprite.rotation.z = phi + this.model.get("pitch");
-			 //don't let the fish point directly at the camera
-			 //maximum reach of pi/4
-			 var quarterPI = Math.PI / 4;
-			 if(theta > quarterPI && theta < 3 * quarterPI) {
-			 theta = Math.min(theta, quarterPI);
-			 theta = Math.max(theta, 3 * quarterPI);
-			 } else if(theta < -quarterPI && theta > -3 * quarterPI) {
-			 theta = Math.min(theta, -3 * quarterPI);
-			 theta = Math.max(theta, -quarterPI);
-			 }
-			 this.sprite.rotation.y = theta + this.model.get("yaw");
 			 //add the translations
 			 this.sprite.translateZ(this.model.get("horizontal"));
 			 this.sprite.translateY(this.model.get("vertical"));
@@ -292,9 +271,19 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		var position = this.model.get("position");
 		var maxOpacity = INTERPOLATE.linear(position.z, -10000, -5000, 0, 1, true);
 		//cancel the previous tween
-		if(this.fadeTween) {
-			this.fadeTween.stop();
-		}
+		/*
+		 if(this.fadeTween) {
+		 this.fadeTween.stop();
+		 }*/
+		var onComplete = function() {
+			this.model.move();
+			var gifOffset = this.model.get("gifOffset");
+			gifOffset++;
+			if(gifOffset === this.model.get("gifCount")) {
+				gifOffset = 0;
+			}
+			this.model.set("gifOffset", gifOffset);
+		}.bind(this);
 		if(beatNum % 2 === offbeat) {
 			this.fadeTween = new TWEEN.Tween({
 				opacity : 0
@@ -304,6 +293,7 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 				material.opacity = this.opacity;
 			}).start();
 		} else {
+			var self = this;
 			//on the offbeat, fade the fish out
 			this.fadeTween = new TWEEN.Tween({
 				opacity : material.opacity
@@ -311,7 +301,7 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 				opacity : 0
 			}, fadeTime).delay(delayTime + beatDuration - fadeTime * 2).easing(TWEEN.Easing.Linear.None).onUpdate(function() {
 				material.opacity = this.opacity;
-			}).start();
+			}).onComplete(onComplete).start();
 		}
 	},
 	//when removed from the collection
@@ -320,40 +310,10 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		this.stopListening();
 		SUBMERSIBLE.scene.remove(this.sprite);
 		//cancel the tween
-		if(this.fadeTween) {
-			this.fadeTween.stop();
-		}
+		/*
+		 if(this.fadeTween) {
+		 this.fadeTween.stop();
+		 }
+		 */
 	}
 });
-/*
- * TEXTURE ANIMATOR FROM https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/Texture-Animation.html
- */
-function TextureAnimator(texture, tilesHoriz, tilesVert, numTiles) {
-	// note: texture passed by reference, will be updated by the update function.
-
-	this.tilesHorizontal = tilesHoriz;
-	this.tilesVertical = tilesVert;
-	// how many images does this spritesheet contain?
-	//  usually equals tilesHoriz * tilesVert, but not necessarily,
-	//  if there at blank tiles at the bottom of the spritesheet.
-	this.numberOfTiles = numTiles;
-	texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-	texture.repeat.set(1 / this.tilesHorizontal, 1 / this.tilesVertical);
-
-	// how long has the current image been displayed?
-	this.currentDisplayTime = 0;
-
-	// which image is currently being displayed?
-	this.currentTile = 0;
-
-	this.update = function(seedValue) {
-		this.currentTile++;
-		if(this.currentTile == this.numberOfTiles)
-			this.currentTile = 0;
-		var currentColumn = (this.currentTile + seedValue) % this.tilesHorizontal;
-		texture.offset.x = currentColumn / this.tilesHorizontal;
-		var currentRow = Math.floor(this.currentTile / this.tilesHorizontal);
-		texture.offset.y = currentRow / this.tilesVertical;
-		texture.needsUpdate = true;
-	};
-}

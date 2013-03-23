@@ -13,7 +13,7 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 		var scalar = timestep / 16;
 		this.previousTime = now;
 		this.forEach(function(model) {
-			model.moveSubmersible(scalar);
+			model.update(scalar);
 		});
 		this.addFish(timestep);
 		/*

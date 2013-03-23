@@ -90,16 +90,15 @@ SUBMERSIBLE.Fishes = [{
 {
 	name : "shark",
 	//after how many seconds does one appear (on average)?
-	probability : 2,
+	probability : 1,
 	attributes : {
 		//specs
-		size : 350,
+		size : 600,
 		mass : 100,
-		speed : 6,
+		speed : 22,
 		subdivision : "4n",
 		//images
 		image : "crayon-shark-sequence.png",
-		texture : THREE.ImageUtils.loadTexture("./images/" + "crayon-shark-sequence.png"),
 		gifCount : 6,
 		//the palegic zone 0 - 3
 		palegicZone : [0, 0],
@@ -113,13 +112,31 @@ SUBMERSIBLE.Fishes = [{
 	probability : 1,
 	attributes : {
 		//specs
-		size : 200,
+		size : 450,
 		mass : 10,
-		speed : 2,
+		speed : 3,
 		subdivision : "2n",
 		//images
 		image : "ink-jelly-sequence.png",
-		texture : THREE.ImageUtils.loadTexture("./images/" + "ink-jelly-sequence.png"),
+		gifCount : 6,
+		//the palegic zone 0 - 3
+		palegicZone : [0, 0],
+		//the length of the swim stroke in seconds
+		gate : 1.5,
+	},
+},
+{
+	name : "simpleFishTwo",
+	//after how many seconds does one appear (on average)?
+	probability : 1,
+	attributes : {
+		//specs
+		size : 250,
+		mass : 20,
+		speed : 15,
+		subdivision : "8n",
+		//images
+		image : "crayon-zone1fish-sequence.png",
 		gifCount : 6,
 		//the palegic zone 0 - 3
 		palegicZone : [0, 0],
