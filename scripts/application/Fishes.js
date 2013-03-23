@@ -4,16 +4,16 @@
 SUBMERSIBLE.Fishes = [{
 	name : "simpleFish",
 	//after how many seconds does one appear (on average)?
-	probability : Infinity,
+	probability : 2,
 	attributes : {
 		//specs
 		size : 80,
 		mass : 3,
-		speed : 10,
+		speed : 14,
 		subdivision : "4n",
 		image : "littleFish.png",
 		//the palegic zone 0 - 2
-		palegicZone : [0, 0],
+		palegicZone : [0, 1],
 		//the length of the swim stroke in seconds
 		gate : .5,
 	},
@@ -28,7 +28,7 @@ SUBMERSIBLE.Fishes = [{
 }, {
 	name : "jellyFishOne",
 	//after how many seconds does one appear (on average)?
-	probability : Infinity,
+	probability : 2,
 	attributes : {
 		//specs
 		size : 200,
@@ -57,7 +57,7 @@ SUBMERSIBLE.Fishes = [{
 }, {
 	name : "anglerfish",
 	//after how many seconds does one appear (on average)?
-	probability : Infinity,
+	probability : 3,
 	attributes : {
 		//specs
 		size : 150,
@@ -86,11 +86,10 @@ SUBMERSIBLE.Fishes = [{
 			this.set("opacity", ramp);
 		},
 	}
-}, 
-{
+}, {
 	name : "shark",
 	//after how many seconds does one appear (on average)?
-	probability : 1,
+	probability : 2,
 	attributes : {
 		//specs
 		size : 600,
@@ -101,15 +100,14 @@ SUBMERSIBLE.Fishes = [{
 		image : "crayon-shark-sequence.png",
 		gifCount : 6,
 		//the palegic zone 0 - 3
-		palegicZone : [0, 0],
+		palegicZone : [0, 1],
 		//the length of the swim stroke in seconds
 		gate : 1.5,
 	},
-},
-{
+}, {
 	name : "jellyTwo",
 	//after how many seconds does one appear (on average)?
-	probability : 1,
+	probability : 2,
 	attributes : {
 		//specs
 		size : 450,
@@ -120,12 +118,11 @@ SUBMERSIBLE.Fishes = [{
 		image : "ink-jelly-sequence.png",
 		gifCount : 6,
 		//the palegic zone 0 - 3
-		palegicZone : [0, 0],
+		palegicZone : [0, 3],
 		//the length of the swim stroke in seconds
 		gate : 1.5,
 	},
-},
-{
+}, {
 	name : "simpleFishTwo",
 	//after how many seconds does one appear (on average)?
 	probability : 1,
@@ -139,7 +136,7 @@ SUBMERSIBLE.Fishes = [{
 		image : "crayon-zone1fish-sequence.png",
 		gifCount : 6,
 		//the palegic zone 0 - 3
-		palegicZone : [0, 0],
+		palegicZone : [0, 1],
 		//the length of the swim stroke in seconds
 		gate : 1.5,
 	},

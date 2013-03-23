@@ -76,8 +76,8 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 	putOnScreen : function() {
 		//either put it way back
 		var zoneDiff = SUBMERSIBLE.model.get("zoneDifference");
-		var zoneMin = -(this.get("palegicZone")[0] * SUBMERSIBLE.model.get("zoneDifference")) - zoneDiff / 4;
-		var zoneMax = -(this.get("palegicZone")[1] * SUBMERSIBLE.model.get("zoneDifference")) + zoneDiff / 4;
+		var zoneMin = -(this.get("palegicZone")[0] * SUBMERSIBLE.model.get("zoneDifference")) + zoneDiff / 3;
+		var zoneMax = -(this.get("palegicZone")[1] * SUBMERSIBLE.model.get("zoneDifference")) - zoneDiff / 3;
 		var yPos = RANDOM.getInt(zoneMin, zoneMax);
 		if(this.get("foreground")) {
 			//either coming from the right or left side
