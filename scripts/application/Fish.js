@@ -51,6 +51,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			audible : false,
 			offbeat : seedValue % 2 === 0,
 			subdivision : "4n",
+			sound : "silence.mp3"
 		}
 	},
 	initialize : function(attributes, options) {
@@ -266,7 +267,7 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 	beat : function(metronome, beatNum, delayTime) {
 		var offbeat = this.model.get("offbeat") ? 1 : 0;
 		var beatDuration = SUBMERSIBLE.metronome.subdivisionToMilliseconds(this.model.get("subdivision"));
-		var fadeTime = beatDuration / 3;
+		var fadeTime = beatDuration / 6;
 		var material = this.sprite.material;
 		var position = this.model.get("position");
 		var maxOpacity = INTERPOLATE.linear(position.z, -10000, -5000, 0, 1, true);

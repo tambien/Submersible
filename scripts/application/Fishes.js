@@ -16,6 +16,8 @@ SUBMERSIBLE.Fishes = [{
 		palegicZone : [0, 1],
 		//the length of the swim stroke in seconds
 		gate : .5,
+		//the audio file of the fish sound
+		sound : "silence.mp3"
 	},
 	options : {
 		swim : function(ramp) {
@@ -40,6 +42,8 @@ SUBMERSIBLE.Fishes = [{
 		palegicZone : [0, 2],
 		//the length of the swim stroke in seconds
 		gate : 4,
+		//the audio file of the fish sound
+		sound : "silence.mp3"
 	},
 	options : {
 		swim : function(ramp) {
@@ -68,9 +72,11 @@ SUBMERSIBLE.Fishes = [{
 		image : "angler.png",
 		gifCount : 3,
 		//the palegic zone 0 - 2
-		palegicZone : [2, 2],
+		palegicZone : [3, 3],
 		//the length of the swim stroke in seconds
 		gate : 1.5,
+		//the audio file of the fish sound
+		sound : "silence.mp3"
 	},
 	options : {
 		swim : function(ramp) {
@@ -100,9 +106,11 @@ SUBMERSIBLE.Fishes = [{
 		image : "crayon-shark-sequence.png",
 		gifCount : 6,
 		//the palegic zone 0 - 3
-		palegicZone : [0, 1],
+		palegicZone : [0, 2],
 		//the length of the swim stroke in seconds
 		gate : 1.5,
+		//the audio file of the fish sound
+		sound : "silence.mp3"
 	},
 }, {
 	name : "jellyTwo",
@@ -121,6 +129,8 @@ SUBMERSIBLE.Fishes = [{
 		palegicZone : [0, 3],
 		//the length of the swim stroke in seconds
 		gate : 1.5,
+		//the audio file of the fish sound
+		sound : "silence.mp3"
 	},
 }, {
 	name : "simpleFishTwo",
@@ -139,5 +149,7 @@ SUBMERSIBLE.Fishes = [{
 		palegicZone : [0, 1],
 		//the length of the swim stroke in seconds
 		gate : 1.5,
+		//the audio file of the fish sound
+		sound : "silence.mp3"
 	},
 }];
