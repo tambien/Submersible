@@ -237,6 +237,12 @@ var SUBMERSIBLE = function() {
 	function start() {
 		render();
 		SUBMERSIBLE.metronome.start();
+		//fade the other water sound out
+		var now = SUBMERSIBLE.context.currentTime;
+		var currentGain = introLoadingGain.gain.value;
+		introLoadingGain.gain.cancelScheduledValues(now);
+		introLoadingGain.gain.setValueAtTime(currentGain, now);
+		introLoadingGain.gain.linearRampToValueAtTime(0, now + 3);
 	}
 
 	function render() {
