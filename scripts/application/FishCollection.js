@@ -4,6 +4,8 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 
 	initialize : function() {
 		this.previousTime = performance.now();
+		//listen for the start to fill the ocean with fish
+		this.listenTo(SUBMERSIBLE.model, "change:started", this.fillOcean);
 	},
 	update : function() {
 		//update the timestep
@@ -13,7 +15,7 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 		var scalar = timestep / 16;
 		this.previousTime = now;
 		this.forEach(function(model) {
-			model.update(scalar);
+			model.update(scalar, timestep);
 		});
 		this.addFish(timestep);
 		/*
@@ -44,6 +46,12 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 				var f = new SUBMERSIBLE.Fish(fish.attributes, fish.options);
 				this.add(f);
 			}
+		}
+	}, 
+	//initially fill the ocean with fish so that it's not empty when you start
+	fillOcean : function(){
+		for (var i = 0; i < 100; i++){
+			this.addFish(100);
 		}
 	}
 });

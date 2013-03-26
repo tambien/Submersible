@@ -64,7 +64,7 @@ var SUBMERSIBLE = function() {
 	var projector, renderer;
 
 	function setupTHREE() {
-		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(30, 4 / 3, 1, 10000);
+		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(30, 4 / 3, 1, 7000);
 		SUBMERSIBLE.camera.position.set(0, 0, 1000);
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
@@ -271,7 +271,7 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 		//the space between zones
 		"zoneDifference" : 4000,
 		//the speed of the sub
-		"speed" : 8,
+		"speed" : 4,
 		//the loading progress
 		"loaded" : false,
 		"loadedAssets" : 0,

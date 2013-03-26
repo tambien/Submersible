@@ -9,53 +9,37 @@ SUBMERSIBLE.Fishes = [{
 		//specs
 		size : 80,
 		mass : 3,
-		speed : 14,
+		speed : 10,
 		subdivision : "4n",
 		image : "littleFish.png",
 		//the palegic zone 0 - 2
 		palegicZone : [0, 1],
-		//the length of the swim stroke in seconds
-		gate : .5,
 		//the audio file of the fish sound
 		sound : "silence.mp3"
 	},
-	options : {
-		swim : function(ramp) {
-			var yaw = INTERPOLATE.sinusoidal(ramp, 0, 1, -.1, .1);
-			//this.set("yaw", yaw);
-			var opacity = INTERPOLATE.sinusoidal(ramp, 0, 1, 0, 1);
-			this.set("opacity", ramp);
-		},
-	}
 }, {
 	name : "jellyFishOne",
 	//after how many seconds does one appear (on average)?
-	probability : 2,
+	probability : 2.5,
 	attributes : {
 		//specs
 		size : 200,
 		mass : 5,
-		speed : 1,
+		speed : 2,
 		subdivision : "2n",
 		image : "jelly0.png",
 		//the palegic zone 0 - 2
 		palegicZone : [0, 2],
 		//the length of the swim stroke in seconds
-		gate : 4,
+		gate : 4000,
 		//the audio file of the fish sound
 		sound : "silence.mp3"
 	},
 	options : {
 		swim : function(ramp) {
-			//the yaw
-			//var yaw = INTERPOLATE.sinusoidal(ramp, 0, 1, -.05, .05);
-			//this.set("yaw", yaw);
-			//also bobs side to side with a different offset
-			var swayRamp = (ramp + .95) % 1;
-			var sway = INTERPOLATE.sinusoidal(swayRamp, 0, 1, .5, -.5);
-			this.set("vertical", sway);
-			var opacity = INTERPOLATE.sinusoidal(ramp, 0, 1, 0, 1);
-			this.set("opacity", ramp);
+			var pitch = INTERPOLATE.sinusoidal(ramp, 0, 1, -1, 1);
+			//this.set("pitch", pitch);
+			this.set("vertical", pitch);
 		},
 	}
 }, {
@@ -66,32 +50,17 @@ SUBMERSIBLE.Fishes = [{
 		//specs
 		size : 150,
 		mass : 10,
-		speed : 3,
+		speed : 4,
 		subdivision : "4n",
 		//images
 		image : "angler.png",
 		gifCount : 3,
+		gifDuration : 450,
 		//the palegic zone 0 - 2
 		palegicZone : [3, 3],
-		//the length of the swim stroke in seconds
-		gate : 1.5,
 		//the audio file of the fish sound
 		sound : "silence.mp3"
 	},
-	options : {
-		swim : function(ramp) {
-			//the yaw
-			var pitchRamp = (ramp + .5) % 1;
-			var pitch = INTERPOLATE.sinusoidal(pitchRamp, 0, 1, 0, .1);
-			this.set("pitch", pitch);
-			//also bobs side to side with a different offset
-			var swayRamp = (ramp + .0) % 1;
-			var sway = INTERPOLATE.sinusoidal(swayRamp, 0, 1, -.2, .2);
-			this.set("vertical", sway);
-			var opacity = INTERPOLATE.sinusoidal(ramp, 0, 1, 0, 1);
-			this.set("opacity", ramp);
-		},
-	}
 }, {
 	name : "shark",
 	//after how many seconds does one appear (on average)?
@@ -100,15 +69,14 @@ SUBMERSIBLE.Fishes = [{
 		//specs
 		size : 600,
 		mass : 100,
-		speed : 22,
+		speed : 5,
 		subdivision : "4n",
 		//images
 		image : "crayon-shark-sequence.png",
 		gifCount : 6,
+		gifDuration : 650,
 		//the palegic zone 0 - 3
-		palegicZone : [0, 2],
-		//the length of the swim stroke in seconds
-		gate : 1.5,
+		palegicZone : [0, 1],
 		//the audio file of the fish sound
 		sound : "silence.mp3"
 	},
@@ -120,18 +88,24 @@ SUBMERSIBLE.Fishes = [{
 		//specs
 		size : 450,
 		mass : 10,
-		speed : 3,
+		speed : 2,
 		subdivision : "2n",
 		//images
 		image : "ink-jelly-sequence.png",
 		gifCount : 6,
+		gifDuration : 530,
 		//the palegic zone 0 - 3
-		palegicZone : [0, 3],
-		//the length of the swim stroke in seconds
-		gate : 1.5,
+		palegicZone : [1, 3],
 		//the audio file of the fish sound
 		sound : "silence.mp3"
 	},
+	options : {
+		swim : function(ramp) {
+			var pitch = INTERPOLATE.sinusoidal(ramp, 0, 1, -1, 1);
+			//this.set("pitch", pitch);
+			this.set("vertical", pitch);
+		},
+	}
 }, {
 	name : "simpleFishTwo",
 	//after how many seconds does one appear (on average)?
@@ -140,15 +114,14 @@ SUBMERSIBLE.Fishes = [{
 		//specs
 		size : 250,
 		mass : 20,
-		speed : 15,
+		speed : 6,
 		subdivision : "8n",
 		//images
 		image : "crayon-zone1fish-sequence.png",
 		gifCount : 6,
+		gifDuration : 300,
 		//the palegic zone 0 - 3
 		palegicZone : [0, 1],
-		//the length of the swim stroke in seconds
-		gate : 1.5,
 		//the audio file of the fish sound
 		sound : "silence.mp3"
 	},
