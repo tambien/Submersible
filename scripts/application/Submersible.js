@@ -64,7 +64,7 @@ var SUBMERSIBLE = function() {
 	var projector, renderer;
 
 	function setupTHREE() {
-		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(30, 4 / 3, 1, 7000);
+		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(40, 4 / 3, 1, 5000);
 		SUBMERSIBLE.camera.position.set(0, 0, 1000);
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
@@ -105,12 +105,23 @@ var SUBMERSIBLE = function() {
 	var projScreenMatrix = new THREE.Matrix4();
 
 	function offscreenTest(object) {
-		// Set the matrix from camera matrices (which are updated on each renderer.render() call)
-		projScreenMatrix.multiplyMatrices(SUBMERSIBLE.camera.projectionMatrix, SUBMERSIBLE.camera.matrixWorldInverse);
-		// Update the frustum
-		frustum.setFromMatrix(projScreenMatrix);
-		// Test for visibility
-		return !frustum.intersectsObject(object)
+
+		var dist = SUBMERSIBLE.camera.position.z - object.position.z;
+		var vFOV = Math.PI * (SUBMERSIBLE.camera.fov / 180);
+		var visibleHeight = 2 * Math.tan(vFOV / 2) * dist;
+		var aspect = SUBMERSIBLE.camera.aspect;
+		var hFOV = 2 * Math.atan(Math.tan(vFOV / 2) * aspect);
+		var visibleWidth = 2 * Math.tan((hFOV / 2 )) * dist;
+		return (Math.abs(object.position.x) > visibleWidth/2 || Math.abs(object.position.y) > visibleHeight/2);
+
+		/*
+		 // Set the matrix from camera matrices (which are updated on each renderer.render() call)
+		 projScreenMatrix.multiplyMatrices(SUBMERSIBLE.camera.projectionMatrix, SUBMERSIBLE.camera.matrixWorldInverse);
+		 // Update the frustum
+		 frustum.setFromMatrix(projScreenMatrix);
+		 // Test for visibility
+		 return !frustum.intersectsObject(object)
+		 */
 	}
 
 	//EVENTS/////////////////////////////////////////////////////////////////////

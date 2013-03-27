@@ -20,7 +20,7 @@ SUBMERSIBLE.Fishes = [{
 }, {
 	name : "jellyFishOne",
 	//after how many seconds does one appear (on average)?
-	probability : 2.5,
+	probability : 3,
 	attributes : {
 		//specs
 		size : 200,
@@ -30,6 +30,7 @@ SUBMERSIBLE.Fishes = [{
 		image : "jelly0.png",
 		//the palegic zone 0 - 2
 		palegicZone : [0, 2],
+		foreground : false,
 		//the length of the swim stroke in seconds
 		gate : 4000,
 		//the audio file of the fish sound
@@ -64,7 +65,7 @@ SUBMERSIBLE.Fishes = [{
 }, {
 	name : "shark",
 	//after how many seconds does one appear (on average)?
-	probability : 2,
+	probability : 3,
 	attributes : {
 		//specs
 		size : 600,
@@ -83,7 +84,7 @@ SUBMERSIBLE.Fishes = [{
 }, {
 	name : "jellyTwo",
 	//after how many seconds does one appear (on average)?
-	probability : 2,
+	probability : 3,
 	attributes : {
 		//specs
 		size : 450,
@@ -94,6 +95,7 @@ SUBMERSIBLE.Fishes = [{
 		image : "ink-jelly-sequence.png",
 		gifCount : 6,
 		gifDuration : 530,
+		foreground : false,
 		//the palegic zone 0 - 3
 		palegicZone : [1, 3],
 		//the audio file of the fish sound

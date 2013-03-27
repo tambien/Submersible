@@ -59,12 +59,8 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		if(options && options.swim) {
 			this.swim = options.swim;
 		}
-		if(options && options.putOnScreen) {
-			this.putOnScreen = options.putOnScreen;
-		}
 		//set the position and direction
 		this.putOnScreen();
-		this.getDirectionVectorFromAngles();
 		//listen to the subdivision for updates
 		var changeString = "change:" + this.get("subdivision");
 		//this.listenTo(SUBMERSIBLE.metronome, changeString, this.beat);
@@ -80,32 +76,36 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 	putOnScreen : function() {
 		//either put it way back
 		var zoneDiff = SUBMERSIBLE.model.get("zoneDifference");
-		var zoneMin = -(this.get("palegicZone")[0] * SUBMERSIBLE.model.get("zoneDifference")) + zoneDiff / 5;
-		var zoneMax = -(this.get("palegicZone")[1] * SUBMERSIBLE.model.get("zoneDifference")) - zoneDiff / 5;
+		var currentZone = -SUBMERSIBLE.model.get("zone");
+		var zoneMin = currentZone * zoneDiff + zoneDiff / 2;
+		var zoneMax = currentZone * zoneDiff - zoneDiff / 2;
 		var yPos = RANDOM.getInt(zoneMin, zoneMax);
+		var direction = this.get("direction");
 		if(this.get("foreground")) {
 			//either coming from the right or left side
 			if(RANDOM.flipCoin()) {
 				//going right from the left side
-				this.set("position", new THREE.Vector3(-1500, yPos, RANDOM.getInt(-2000, -1000)));
+				this.set("position", new THREE.Vector3(-2500, yPos, RANDOM.getInt(-2000, -1500)));
+				direction.setX(1);
 			} else {
-				this.set("position", new THREE.Vector3(1500, yPos, RANDOM.getInt(-2000, -1000)));
-				this.set("theta", Math.PI - this.get("theta"));
+				this.set("position", new THREE.Vector3(2500, yPos, RANDOM.getInt(-2000, -1500)));
+				direction.setX(-1);
 			}
-			//foreground fish can also be swimming away from the submersible
-			if(RANDOM.flipCoin()) {
-				this.set("theta", -this.get("theta"));
-			}
+			direction.setZ(RANDOM.getFloat(-.3, .3));
 		} else {
-			this.set("position", new THREE.Vector3(RANDOM.getInt(-1000, 1000), yPos, -5001));
+			this.set("position", new THREE.Vector3(RANDOM.getInt(-2000, 2000), yPos, -5001));
 			//could be swimming left or right
-			if(RANDOM.flipCoin()) {
-				this.set("theta", Math.PI - this.get("theta"));
-			}
+			direction.setX(RANDOM.flipCoin() ? -1 : 1);
+			direction.setZ(RANDOM.getFloat(.3));
 		}
+		direction.setY(RANDOM.getFloat(-.2, .2));
+		this.getDirectionVectorFromAngles();
 	},
 	//converts the speed, theta and phi into a vector
 	getDirectionVectorFromAngles : function() {
+		var direction = this.get("direction").normalize().multiplyScalar(this.get("speed"));
+		this.set("phi", Math.atan2(direction.y, direction.x));
+		/*
 		//polar to cartesian
 		var r = this.get("speed")// * (SUBMERSIBLE.metronome.subdivisionToMilliseconds(this.get("subdivision")) / 16);
 		var q = this.get("theta");
@@ -117,6 +117,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		//the direction vector
 		var direction = new THREE.Vector3(x, y, z);
 		this.set("direction", direction);
+		*/
 	},
 	//removes the model from the collection, makes it inaudible, and removes the sprite
 	remove : function() {
@@ -151,7 +152,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 	beat : function(metronome, beatNum, delayTime) {
 		var offbeat = this.get("offbeat") ? 1 : 0;
 		if(beatNum % 2 === offbeat) {
-			this.testOffScreen();
+			//this.testOffScreen();
 			//this.randomChange(SUBMERSIBLE.metronome.subdivisionToMilliseconds(this.get("subdivision")));
 			//setTimeout(function(self) {
 			//this.move();
@@ -171,19 +172,30 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		pos.add(dir);
 	},
 	//test if it needs to be invisible
-	testOffScreen : function() {
-		var position = this.get('position');
-		if(position.x > 5000 || position.x < -5000) {
+	offscreenTest : function() {
+		var position = this.get('position').clone();
+		var zoneDiff = SUBMERSIBLE.model.get("zoneDifference");
+		var currentZone = -SUBMERSIBLE.model.get("zone");
+		//test if they're getting too close to the sub
+		//var dist = position.sub(SUBMERSIBLE.camera.position);
+		//if it's too far away, remove it
+		if(position.z < -5100 || position.z > 1100) {
 			this.remove();
-		} else if(position.z > 1200 || position.z < -6000) {
+		} else if(Math.abs(position.x) > 2800) {
 			this.remove();
+		} else {
+			this.set("audible", true);
 		}
+		
+		
+
 		//test if it's in the camera view to set the audibility
 		if(SUBMERSIBLE.offscreenTest(this.view.sprite)) {
 			this.set("audible", false);
 		} else {
 			this.set("audible", true);
 		}
+
 	},
 	randomChange : function(step) {
 		//once every 5 seconds approximately
@@ -212,10 +224,12 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		this.sprite = new THREE.Particle(new THREE.ParticleCanvasMaterial({
 			color : Math.random() * 0x808080 + 0x808080,
 			program : drawProgram,
+			useScreenCoordinates : true,
 		}));
 		var ratio = this.model.get("imageHeight") / (this.model.get("imageWidth") / this.model.get("gifCount"));
 		this.sprite.scale.x = this.model.get("size");
 		this.sprite.scale.y = this.model.get("size") * ratio;
+		//add it to the scene
 		SUBMERSIBLE.scene.add(this.sprite);
 		//position the fish initially
 		this.positionFish(this.model);
@@ -238,7 +252,7 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		context.translate(0.5, 0.5);
 		var direction = model.get("direction");
 		if(direction.x < 0) {
-			context.scale(-1, -1);
+			//context.scale(-1, -1);
 		} else {
 			context.scale(1, -1);
 		}
