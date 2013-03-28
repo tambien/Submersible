@@ -360,7 +360,7 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 	queueStart : function(model, started) {
 		if(started) {
 			//queue the start in time
-			this.listenToOnce(SUBMERSIBLE.metronome, "change:4n", this.startSounds);
+			this.listenToOnce(SUBMERSIBLE.metronome, "change:1n", this.startSounds);
 		}
 	},
 	startSounds : function(model, quarterNode, time) {
