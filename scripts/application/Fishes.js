@@ -4,7 +4,7 @@
 SUBMERSIBLE.Fishes = [{
 	name : "simpleFish",
 	//after how many seconds does one appear (on average)?
-	probability : 2,
+	probability : Infinity,
 	attributes : {
 		//specs
 		size : 80,
@@ -15,12 +15,12 @@ SUBMERSIBLE.Fishes = [{
 		//the palegic zone 0 - 2
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
-		sound : "silence.mp3"
+		//sound : "silence.mp3"
 	},
 }, {
 	name : "jellyFishOne",
 	//after how many seconds does one appear (on average)?
-	probability : 3,
+	probability : Infinity,
 	attributes : {
 		//specs
 		size : 200,
@@ -34,7 +34,7 @@ SUBMERSIBLE.Fishes = [{
 		//the length of the swim stroke in seconds
 		gate : 4000,
 		//the audio file of the fish sound
-		sound : "silence.mp3"
+		//sound : "silence.mp3"
 	},
 	options : {
 		swim : function(ramp) {
@@ -46,7 +46,7 @@ SUBMERSIBLE.Fishes = [{
 }, {
 	name : "anglerfish",
 	//after how many seconds does one appear (on average)?
-	probability : 3,
+	probability : Infinity,
 	attributes : {
 		//specs
 		size : 150,
@@ -60,18 +60,18 @@ SUBMERSIBLE.Fishes = [{
 		//the palegic zone 0 - 2
 		palegicZone : [3, 3],
 		//the audio file of the fish sound
-		sound : "silence.mp3"
+		//sound : "silence.mp3"
 	},
 }, {
 	name : "shark",
 	//after how many seconds does one appear (on average)?
-	probability : 3,
+	probability : 4,
 	attributes : {
 		//specs
 		size : 600,
 		mass : 100,
 		speed : 5,
-		subdivision : "4n",
+		subdivision : "2n",
 		//images
 		image : "crayon-shark-sequence.png",
 		gifCount : 6,
@@ -79,12 +79,12 @@ SUBMERSIBLE.Fishes = [{
 		//the palegic zone 0 - 3
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
-		sound : "silence.mp3"
+		sound : "shark.mp3"
 	},
 }, {
 	name : "jellyTwo",
 	//after how many seconds does one appear (on average)?
-	probability : 3,
+	probability : Infinity,
 	attributes : {
 		//specs
 		size : 450,
@@ -111,13 +111,13 @@ SUBMERSIBLE.Fishes = [{
 }, {
 	name : "simpleFishTwo",
 	//after how many seconds does one appear (on average)?
-	probability : 1,
+	probability : 3,
 	attributes : {
 		//specs
 		size : 250,
 		mass : 20,
 		speed : 6,
-		subdivision : "8n",
+		subdivision : "4n",
 		//images
 		image : "crayon-zone1fish-sequence.png",
 		gifCount : 6,
@@ -125,6 +125,31 @@ SUBMERSIBLE.Fishes = [{
 		//the palegic zone 0 - 3
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
-		sound : "silence.mp3"
+		sound : "sadFish.mp3"
 	},
+}, {
+	name : "zone0Bubble",
+	//after how many seconds does one appear (on average)?
+	probability : .5,
+	attributes : {
+		//specs
+		size : 100,
+		speed : 0,
+		subdivision : "1n",
+		//images
+		image : "radiating-bubble.png",
+		gifCount : 10,
+		gifDuration : 100,
+		foreground: false,
+		gate : 2000,
+		//the palegic zone 0 - 3
+		palegicZone : [0, 0],
+	},
+	options : {
+		swim : function(ramp) {
+			var pitch = INTERPOLATE.sinusoidal(ramp, 0, 1, -1, 1);
+			//this.set("pitch", pitch);
+			this.set("vertical", pitch);
+		},
+	}
 }];

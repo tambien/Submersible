@@ -86,7 +86,7 @@ var INTERPOLATE = function() {
 	return {
 		linear : scale,
 		linearInt : scaleInt,
-		logithimic : scaleLog,
+		logarithmic : scaleLog,
 		exponential : scaleExp,
 		sinusoidal : scaleSine,
 	}

@@ -51,7 +51,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			audible : false,
 			offbeat : seedValue % 2 === 0,
 			subdivision : "4n",
-			sound : "silence.mp3"
+			//sound : "silence.mp3"
 		}
 	},
 	initialize : function(attributes, options) {
@@ -61,17 +61,28 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		}
 		//set the position and direction
 		this.putOnScreen();
-		//listen to the subdivision for updates
-		var changeString = "change:" + this.get("subdivision");
-		//this.listenTo(SUBMERSIBLE.metronome, changeString, this.beat);
 		//start hte timer
 		this.fishTime = 0;
 		//the view
 		this.view = new SUBMERSIBLE.Fish.View({
 			model : this,
 		});
+		this.sound = new SUBMERSIBLE.Fish.Sound({
+			model : this,
+		})
+		//set the gif offset initially using the seed value so that images
+		//put on the screen at the same time, don't have hte same movements
+		this.set("gifOffset", this.get("seedValue") % this.get("gifCount"));
 	},
 	//ADD/REMOVE FISH//////////////////////////////////////////////////////////
+	getScreenWidthFromZ : function(z) {
+		var dist = SUBMERSIBLE.camera.position.z - z;
+		var vFOV = (Math.PI * SUBMERSIBLE.camera.fov) / 180;
+		var aspect = SUBMERSIBLE.camera.aspect;
+		var hFOV = 2 * Math.atan(Math.tan(vFOV / 2) * aspect);
+		var visibleWidth = 2 * Math.tan((hFOV / 2 )) * dist;
+		return visibleWidth / 2
+	},
 	//sets the direction vectors as well based on the position
 	putOnScreen : function() {
 		//either put it way back
@@ -79,45 +90,47 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		var currentZone = -SUBMERSIBLE.model.get("zone");
 		var zoneMin = currentZone * zoneDiff + zoneDiff / 2;
 		var zoneMax = currentZone * zoneDiff - zoneDiff / 2;
-		var yPos = RANDOM.getInt(zoneMin, zoneMax);
+		var position = this.get('position');
+		position.y = RANDOM.getInt(zoneMin, zoneMax);
 		var direction = this.get("direction");
 		if(this.get("foreground")) {
 			//either coming from the right or left side
+			//pick a random z
+			var zPos = RANDOM.getInt(-3000, -2000);
+			position.z = zPos;
+			var halfWidth = this.getScreenWidthFromZ(zPos) + this.get("size");
+
 			if(RANDOM.flipCoin()) {
-				//going right from the left side
-				this.set("position", new THREE.Vector3(-2500, yPos, RANDOM.getInt(-2000, -1500)));
+				position.x = -halfWidth;
 				direction.setX(1);
 			} else {
-				this.set("position", new THREE.Vector3(2500, yPos, RANDOM.getInt(-2000, -1500)));
+				position.x = halfWidth;
 				direction.setX(-1);
 			}
-			direction.setZ(RANDOM.getFloat(-.3, .3));
+			direction.setZ(RANDOM.getFloat(-.2, .2));
 		} else {
-			this.set("position", new THREE.Vector3(RANDOM.getInt(-2000, 2000), yPos, -5001));
+			position.z = -6001;
+			var halfWidth = this.getScreenWidthFromZ(position.z) - this.get("size") * 4;
+			position.x = RANDOM.getInt(-halfWidth, halfWidth);
 			//could be swimming left or right
 			direction.setX(RANDOM.flipCoin() ? -1 : 1);
-			direction.setZ(RANDOM.getFloat(.3));
+			direction.setZ(RANDOM.getFloat(.2));
 		}
-		direction.setY(RANDOM.getFloat(-.2, .2));
+		direction.setY(RANDOM.getFloat(-.1, .1));
 		this.getDirectionVectorFromAngles();
+	},
+	//puts the object in the center of teh screen, useful for when switching palegic zones
+	putInCenter : function() {
+		var position = this.get('position');
+		var zPos = RANDOM.getInt(-6000, -2000);
+		position.z = zPos;
+		var halfWidth = this.getScreenWidthFromZ(zPos) + this.get("size");
+		position.x = RANDOM.getInt(-halfWidth, halfWidth);
 	},
 	//converts the speed, theta and phi into a vector
 	getDirectionVectorFromAngles : function() {
 		var direction = this.get("direction").normalize().multiplyScalar(this.get("speed"));
 		this.set("phi", Math.atan2(direction.y, direction.x));
-		/*
-		//polar to cartesian
-		var r = this.get("speed")// * (SUBMERSIBLE.metronome.subdivisionToMilliseconds(this.get("subdivision")) / 16);
-		var q = this.get("theta");
-		var f = this.get("phi");
-		var cosQ = Math.cos(q);
-		var z = r * cosQ * Math.cos(f);
-		var y = r * cosQ * Math.sin(f);
-		var x = r * cosQ;
-		//the direction vector
-		var direction = new THREE.Vector3(x, y, z);
-		this.set("direction", direction);
-		*/
 	},
 	//removes the model from the collection, makes it inaudible, and removes the sprite
 	remove : function() {
@@ -125,6 +138,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		//stop listening
 		this.stopListening();
 		this.view.remove();
+		this.sound.remove();
 		this.collection.remove(this);
 	},
 	//UPDATE FUNCTIONS/////////////////////////////////////////////////////////
@@ -143,23 +157,12 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		this.moveSubmersible(scalar);
 		//update the view
 		this.view.positionFish(this);
+		//update the sound position
+		this.sound.update(scalar);
 	},
 	moveSubmersible : function(scalar) {
 		var pos = this.get('position');
 		pos.z += SUBMERSIBLE.model.get("speed") * scalar;
-	},
-	//called on every beat
-	beat : function(metronome, beatNum, delayTime) {
-		var offbeat = this.get("offbeat") ? 1 : 0;
-		if(beatNum % 2 === offbeat) {
-			//this.testOffScreen();
-			//this.randomChange(SUBMERSIBLE.metronome.subdivisionToMilliseconds(this.get("subdivision")));
-			//setTimeout(function(self) {
-			//this.move();
-			//this.testOffScreen();
-			//}, delayTime, this);
-			//stothis.testOffScreen();
-		}
 	},
 	//called when the fish is on the screen
 	//t is a ramp between 0 - 1 of the duration of the gate
@@ -174,23 +177,15 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 	//test if it needs to be invisible
 	offscreenTest : function() {
 		var position = this.get('position').clone();
-		var zoneDiff = SUBMERSIBLE.model.get("zoneDifference");
-		var currentZone = -SUBMERSIBLE.model.get("zone");
-		//test if they're getting too close to the sub
-		//var dist = position.sub(SUBMERSIBLE.camera.position);
 		//if it's too far away, remove it
-		if(position.z < -5100 || position.z > 1100) {
+		var screenWidth = this.getScreenWidthFromZ(position.z);
+		if(position.z < -6100 || position.z > 100) {
 			this.remove();
-		} else if(Math.abs(position.x) > 2800) {
+		} else if(Math.abs(position.x) > (screenWidth + this.get("size") * 2)) {
 			this.remove();
-		} else {
-			this.set("audible", true);
 		}
-		
-		
-
 		//test if it's in the camera view to set the audibility
-		if(SUBMERSIBLE.offscreenTest(this.view.sprite)) {
+		if(SUBMERSIBLE.offscreenTest(this)) {
 			this.set("audible", false);
 		} else {
 			this.set("audible", true);
@@ -236,7 +231,7 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		//setup the gifTime
 		this.gifTime = 0;
 		//listen to the beat changes
-		//var changeString = "change:" + this.model.get("subdivision");
+		var changeString = "change:" + this.model.get("subdivision");
 		//this.listenTo(SUBMERSIBLE.metronome, changeString, this.beat);
 	},
 	//draws the image in the context
@@ -249,11 +244,10 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		var imagePosition = gifOffset * imageWidth;
 
 		context.save();
-		context.translate(0.5, 0.5);
+
 		var direction = model.get("direction");
-		if(direction.x < 0) {
-			//context.scale(-1, -1);
-		} else {
+		if(direction.x > 0) {
+			context.translate(0.5, 0.5);
 			context.scale(1, -1);
 		}
 		context.drawImage(model.get("image"), imagePosition, 0, imageWidth, model.get("imageHeight"), 0, 0, 1, 1);
@@ -269,7 +263,7 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 			//add the translations
 			this.sprite.translateZ(this.model.get("horizontal"));
 			this.sprite.translateY(this.model.get("vertical"));
-			var opacity = INTERPOLATE.linear(position.z, -5000, -1000, 0, 1, true);
+			var opacity = INTERPOLATE.linear(position.z, -6000, -2500, 0, 1, true);
 			this.sprite.material.opacity = opacity * opacity;
 		}
 	},
@@ -293,38 +287,15 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 	//called on every beat
 	beat : function(metronome, beatNum, delayTime) {
 		var offbeat = this.model.get("offbeat") ? 1 : 0;
-		var beatDuration = SUBMERSIBLE.metronome.subdivisionToMilliseconds(this.model.get("subdivision"));
-		var fadeTime = beatDuration / 6;
-		var material = this.sprite.material;
-		var position = this.model.get("position");
-		var maxOpacity = INTERPOLATE.linear(position.z, -5000, -1000, 0, 1, true);
-		//cancel the previous tween
-		/*
-		 if(this.fadeTween) {
-		 this.fadeTween.stop();
-		 }*/
-		var onComplete = function() {
-			this.model.move();
-			//this.moveGif();
-		}.bind(this);
 		if(beatNum % 2 === offbeat) {
+			var sprite = this.sprite;
 			this.fadeTween = new TWEEN.Tween({
-				opacity : 0
+				scale : sprite.scale.x,
 			}).to({
-				opacity : maxOpacity
-			}, fadeTime).delay(delayTime).easing(TWEEN.Easing.Linear.None).onUpdate(function() {
-				material.opacity = this.opacity;
+				scale : sprite.scale.x * 2,
+			}, 100).delay(delayTime).onComplete(function() {
+				sprite.visible = true;
 			}).start();
-		} else {
-			var self = this;
-			//on the offbeat, fade the fish out
-			this.fadeTween = new TWEEN.Tween({
-				opacity : material.opacity
-			}).to({
-				opacity : 0
-			}, fadeTime).delay(delayTime + beatDuration - fadeTime * 2).easing(TWEEN.Easing.Linear.None).onUpdate(function() {
-				material.opacity = this.opacity;
-			}).onComplete(onComplete).start();
 		}
 	},
 	//when removed from the collection
@@ -332,5 +303,69 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		//remove the sprite from the scene
 		this.stopListening();
 		SUBMERSIBLE.scene.remove(this.sprite);
+	}
+});
+
+SUBMERSIBLE.Fish.Sound = Backbone.View.extend({
+
+	initialize : function() {
+		if(this.model.get("sound")) {
+			var context = SUBMERSIBLE.context;
+			//make the gain
+			this.gain = context.createGainNode();
+			this.gain.gain.value = 0;
+			//and the source node
+			this.source = context.createBufferSource();
+			//set hte buffer
+			this.source.buffer = this.model.get("sound");
+			this.source.loop = true;
+			//make the panner node
+			this.panner = context.createPanner();
+			//this.panner.panningModel = 'equalpower';
+			//make the lowpass filter
+			this.lowpass = context.createBiquadFilter();
+			//this.panner.rolloffFactor = 2;
+			//connect it up
+			this.source.connect(this.lowpass);
+			this.lowpass.connect(this.panner);
+			this.panner.connect(this.gain);
+			this.gain.connect(SUBMERSIBLE.fishOutput);
+			//add the event listeners
+			this.listenTo(this.model, "change:audible", this.setVolume);
+			//start the fish on the next metro tick
+			var changeString = "change:" + this.model.get("subdivision");
+			this.listenToOnce(SUBMERSIBLE.metronome, changeString, this.start);
+		}
+	},
+	setVolume : function(model, audible) {
+		var now = SUBMERSIBLE.context.currentTime;
+		var volume = audible ? 1 : 0;
+		var currentGain = this.gain.gain.value;
+		this.gain.gain.cancelScheduledValues(now);
+		this.gain.gain.setValueAtTime(currentGain, now);
+		this.gain.gain.linearRampToValueAtTime(volume, now + 1);
+	},
+	start : function(model, beatNum, beatTime) {
+		this.model.set("offbeat", beatNum % 2 === 1);
+		this.source.noteOn(beatTime);
+	},
+	update : function(scalar) {
+		if(this.panner) {
+			//move the panner node to the current position
+			var position = this.model.get("position").clone();
+			//set the lowpass freq based on the z
+			this.lowpass.frequency.value = INTERPOLATE.logarithmic(position.z, -6000, -1000, 100, 20000, true);
+			//scale things properly
+			position.divideScalar(1000);
+			this.panner.setPosition(position.x, 0, position.z);
+		}
+	},
+	remove : function() {
+		//stop the buffer
+		this.stopListening();
+		var now = SUBMERSIBLE.context.currentTime;
+		if(this.source) {
+			this.source.noteOff(now + 1.2);
+		}
 	}
 });

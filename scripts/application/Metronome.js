@@ -25,18 +25,17 @@ SUBMERSIBLE.Metronome = Backbone.Model.extend({
 		"4n" : -1,
 		"8n" : -1,
 		"16n" : -1,
-		"32n" : -1,
 		//the position is in fractions of a measure
 		"tatums" : 0,
 	},
 
 	initialize : function(attributes, options) {
 		//the smallest measurement for the metronome
-		this.subdivision = 32;
+		this.subdivision = 16;
 		this.tatum = 0;
 		//this.phase = 0;
 		//make the wave watcher
-		this.scriptNode = SUBMERSIBLE.context.createJavaScriptNode(2048, 1, 1);
+		this.scriptNode = SUBMERSIBLE.context.createJavaScriptNode(4096, 1, 1);
 		this.scriptNode.connect(SUBMERSIBLE.context.destination);
 		//setup the callback
 		this.createScriptCallback();

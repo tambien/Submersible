@@ -5,10 +5,11 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 	initialize : function() {
 		this.previousTime = performance.now();
 		//listen for the start to fill the ocean with fish
-		this.listenTo(SUBMERSIBLE.model, "change:started", this.fillZone);
-		this.listenTo(SUBMERSIBLE.model, "change:zone", this.fillZone);
-		//periodically test if the fish are offscreen
-		setInterval(function(self) {
+		var throttledZoneFill = _.throttle(_.bind(this.fillZone, this), 5000);
+		this.listenTo(SUBMERSIBLE.model, "change:started", throttledZoneFill);
+		this.listenTo(SUBMERSIBLE.model, "change:zone", throttledZoneFill);
+		//set a timeout to test offscreenness less frequently
+		this.offscreenInterval = setInterval(function(self) {
 			self.offscreenTest();
 		}, 500, this);
 	},
@@ -23,23 +24,6 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 			model.update(scalar, timestep);
 		});
 		this.addFish(timestep);
-		/*
-		 _.forEach(visibles, function(model) {
-		 model.update(timestep, scalar, now);
-		 });
-
-		 //periodically add a fish to the scene
-		 if(RANDOM.getFloat() > .99) {
-		 //make a new fish appear
-		 var notVisible = this.where({
-		 visible : false,
-		 })
-		 if(notVisible.length > 0) {
-		 var chosen = RANDOM.choose(notVisible);
-		 chosen.set("visible", true);
-		 }
-		 }
-		 */
 	},
 	addFish : function(step) {
 		for(var fishNum = 0; fishNum < SUBMERSIBLE.Fishes.length; fishNum++) {
@@ -54,14 +38,18 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 					//add that fish to the collection
 					var f = new SUBMERSIBLE.Fish(fish.attributes, fish.options);
 					this.add(f);
+					return f;
 				}
 			}
 		}
 	},
 	//initially fill the ocean with fish so that it's not empty when you start
 	fillZone : function() {
-		for(var i = 0; i < 10; i++) {
-			this.addFish(1000);
+		for(var i = 0; i < 30; i++) {
+			var fish = this.addFish(1000);
+			if (fish){
+				fish.putInCenter();
+			}
 		}
 	},
 	offscreenTest : function() {

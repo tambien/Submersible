@@ -27,7 +27,7 @@ var SUBMERSIBLE = function() {
 		})
 		//the metronome
 		SUBMERSIBLE.metronome = new SUBMERSIBLE.Metronome({
-			bpm : 110,
+			bpm : 96,
 		});
 		//make the controls
 		SUBMERSIBLE.controls = new SUBMERSIBLE.Controls({
@@ -56,7 +56,19 @@ var SUBMERSIBLE = function() {
 		audioContext = new webkitAudioContext();
 		SUBMERSIBLE.context = audioContext;
 		SUBMERSIBLE.output = audioContext.createGainNode();
+		//a special output just for fish
+		SUBMERSIBLE.fishOutput = audioContext.createGainNode();
+		SUBMERSIBLE.fishOutput.gain.value = .5;
+		//more like a limiter than compressor
+		SUBMERSIBLE.fishCompressor = audioContext.createDynamicsCompressor();
+		SUBMERSIBLE.fishCompressor.threshold.value = -10;
+		SUBMERSIBLE.fishCompressor.ratio.value = 20;
+		//connect it up
+		SUBMERSIBLE.fishOutput.connect(SUBMERSIBLE.fishCompressor);
+		SUBMERSIBLE.fishCompressor.connect(audioContext.destination)
 		SUBMERSIBLE.output.connect(audioContext.destination);
+		//move the listener
+		audioContext.listener.setPosition(0, 0, 5);
 	}
 
 	//THREE////////////////////////////////////////////////////////////////////
@@ -64,8 +76,8 @@ var SUBMERSIBLE = function() {
 	var projector, renderer;
 
 	function setupTHREE() {
-		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(40, 4 / 3, 1, 5000);
-		SUBMERSIBLE.camera.position.set(0, 0, 1000);
+		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(40, 4 / 3, 1, 6000);
+		SUBMERSIBLE.camera.position.set(0, 0, 0);
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
 		//the renderer
@@ -99,29 +111,20 @@ var SUBMERSIBLE = function() {
 		}
 	}
 
-	// Create a new Frustum object (for efficiency, do this only once)
-	var frustum = new THREE.Frustum();
-	// Helper matrix (for efficiency, do this only once)
-	var projScreenMatrix = new THREE.Matrix4();
-
-	function offscreenTest(object) {
-
-		var dist = SUBMERSIBLE.camera.position.z - object.position.z;
-		var vFOV = Math.PI * (SUBMERSIBLE.camera.fov / 180);
-		var visibleHeight = 2 * Math.tan(vFOV / 2) * dist;
+	function offscreenTest(model) {
+		var object = model.view.sprite;
+		var size = model.get('size');
+		var zDist = SUBMERSIBLE.camera.position.z - object.position.z;
+		var yDist = SUBMERSIBLE.camera.position.y - object.position.y;
+		if(zDist < 0) {
+			return true;
+		}
+		var vFOV = (Math.PI * SUBMERSIBLE.camera.fov) / 180;
+		var visibleHeight = 2 * Math.tan(vFOV / 2) * zDist;
 		var aspect = SUBMERSIBLE.camera.aspect;
 		var hFOV = 2 * Math.atan(Math.tan(vFOV / 2) * aspect);
-		var visibleWidth = 2 * Math.tan((hFOV / 2 )) * dist;
-		return (Math.abs(object.position.x) > visibleWidth/2 || Math.abs(object.position.y) > visibleHeight/2);
-
-		/*
-		 // Set the matrix from camera matrices (which are updated on each renderer.render() call)
-		 projScreenMatrix.multiplyMatrices(SUBMERSIBLE.camera.projectionMatrix, SUBMERSIBLE.camera.matrixWorldInverse);
-		 // Update the frustum
-		 frustum.setFromMatrix(projScreenMatrix);
-		 // Test for visibility
-		 return !frustum.intersectsObject(object)
-		 */
+		var visibleWidth = 2 * Math.tan((hFOV / 2 )) * zDist;
+		return (Math.abs(object.position.x) > visibleWidth / 2 || Math.abs(yDist) > visibleHeight / 2);
 	}
 
 	//EVENTS/////////////////////////////////////////////////////////////////////
@@ -151,7 +154,6 @@ var SUBMERSIBLE = function() {
 
 	function incrementLoading() {
 		var loadTotal = SUBMERSIBLE.Fishes.length * 2 + 5;
-		//loadedAssets
 		SUBMERSIBLE.model.set("loadedAssets", SUBMERSIBLE.model.get("loadedAssets") + 1);
 	}
 
@@ -183,7 +185,7 @@ var SUBMERSIBLE = function() {
 
 	function loadFishSounds() {
 		//load the zone sounds
-		var zoneSounds = ['zone0.mp3', 'zone1.mp3', 'zone2.mp3', 'zone3.mp3'];
+		var zoneSounds = ['zone0_2.mp3', 'zone1_2.mp3', 'zone2_2.mp3', 'zone3_2.mp3'];
 		for(var i = 0; i < zoneSounds.length; i++) {
 			loadURL(zoneSounds[i], function(index) {
 				return function(buffer) {
@@ -195,11 +197,15 @@ var SUBMERSIBLE = function() {
 		var fishes = SUBMERSIBLE.Fishes;
 		for(var fishNum = 0; fishNum < fishes.length; fishNum++) {
 			var fish = fishes[fishNum];
-			loadURL(fish.attributes.sound, function(fish) {
-				return function(buffer) {
-					fish.attributes.sound = buffer;
-				}
-			}(fish));
+			if(fish.attributes.sound) {
+				loadURL(fish.attributes.sound, function(fish) {
+					return function(buffer) {
+						fish.attributes.sound = buffer;
+					}
+				}(fish));
+			} else {
+				incrementLoading();
+			}
 		}
 	}
 
@@ -329,7 +335,7 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 		this.buffers = [];
 		this.listenTo(this.model, "change:zone", this.changeZoneSound);
 		//start all the sounds once it's loaded
-		this.listenTo(this.model, "change:started", this.startSounds);
+		this.listenTo(this.model, "change:started", this.queueStart);
 	},
 	changeZoneSound : function(model, zone) {
 		var now = SUBMERSIBLE.context.currentTime;
@@ -339,7 +345,7 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 		var currentGain = gain.gain.value;
 		gain.gain.cancelScheduledValues(now);
 		gain.gain.setValueAtTime(currentGain, now);
-		gain.gain.linearRampToValueAtTime(1, now + rampTime);
+		gain.gain.linearRampToValueAtTime(.5, now + rampTime);
 		//fade out the previous gain
 		var previousZone = this.model.previous("zone");
 		var previousGain = this.gains[previousZone];
@@ -351,24 +357,28 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 			previousGain.gain.linearRampToValueAtTime(0, now + rampTime);
 		}
 	},
-	startSounds : function(model, started) {
+	queueStart : function(model, started) {
 		if(started) {
-			this.makeGains();
-			var context = SUBMERSIBLE.context;
-			//make a buffer player and connect all of the sounds
-			for(var g = 0; g < this.buffers.length; g++) {
-				var gain = this.gains[g];
-				var buffer = this.buffers[g];
-				//make the buffer player
-				var source = context.createBufferSource();
-				source.buffer = buffer;
-				source.loop = true;
-				source.connect(gain);
-				source.noteOn(0);
-			}
-			//set the gain of the current zone;
-			this.changeZoneSound(this.model, this.model.get("zone"));
+			//queue the start in time
+			this.listenToOnce(SUBMERSIBLE.metronome, "change:4n", this.startSounds);
 		}
+	},
+	startSounds : function(model, quarterNode, time) {
+		this.makeGains();
+		var context = SUBMERSIBLE.context;
+		//make a buffer player and connect all of the sounds
+		for(var g = 0; g < this.buffers.length; g++) {
+			var gain = this.gains[g];
+			var buffer = this.buffers[g];
+			//make the buffer player
+			var source = context.createBufferSource();
+			source.buffer = buffer;
+			source.loop = true;
+			source.connect(gain);
+			source.noteOn(time);
+		}
+		//set the gain of the current zone;
+		this.changeZoneSound(this.model, this.model.get("zone"));
 	},
 	makeGains : function() {
 		this.gains = [];
@@ -440,21 +450,21 @@ SUBMERSIBLE.LoadingScreen = Backbone.View.extend({
 		this.model.set("loaded", true);
 		//when everything is loaded, make the collection
 		SUBMERSIBLE.fishCollection = new SUBMERSIBLE.FishCollection();
-		//and start the drawing
-		SUBMERSIBLE.start();
 		//turn the loading bar into a button
 		this.$loadingProgress.html("<div id='startButton'>START</div>");
 	},
-	startClicked : function() {
+	startClicked : _.once(function() {
 		//fade the loading screen out
 		this.$el.fadeTo(2000, 0, function() {
 			$(this).css({
 				"z-index" : -1000,
 			})
 		})
+		//and start the drawing
+		SUBMERSIBLE.start();
 		//start the model
 		this.model.set("started", true);
-	}
+	})
 });
 
 //development version
