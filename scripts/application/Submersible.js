@@ -253,7 +253,6 @@ var SUBMERSIBLE = function() {
 
 	function start() {
 		render();
-		SUBMERSIBLE.metronome.start();
 		//fade the other water sound out
 		var now = SUBMERSIBLE.context.currentTime;
 		var currentGain = introLoadingGain.gain.value;
@@ -297,6 +296,9 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 	},
 	initialize : function(attributes, options) {
 		this.on("change:zone", this.moveZones);
+		this.makeSeaWall();
+		var percent = (this.get("zone") / 3) * 100;
+		this.moveSeaWall(percent);
 	},
 	validate : function(attributes) {
 		if(attributes.zone < 0 || attributes.zone > 3) {
@@ -306,23 +308,61 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 	moveZones : function(model, zone) {
 		//find the zone change
 		var diff = Math.abs(zone - model.previous("zone"));
-		var $seawall = $("#seaWall");
 		//var scrollTop = zone * seawall.height();
 		var animationTime = 5000 * diff;
 		var zoneDifference = this.get("zoneDifference");
 		if(this.cameraTween) {
 			this.cameraTween.stop();
 		}
+		var self = this;
+		var percentage = (this.get("zone") / 4) * 100;
 		this.cameraTween = new TWEEN.Tween({
-			scrollTop : $seawall.scrollTop(),
+			percentage : self.percentage,
 			cameraY : SUBMERSIBLE.camera.position.y,
 		}).to({
-			scrollTop : zone * $seawall.height(),
+			percentage : percentage,
 			cameraY : -(zone * zoneDifference),
 		}, animationTime).easing(TWEEN.Easing.Quadratic.InOut).onUpdate(function() {
-			$seawall.scrollTop(this.scrollTop);
+			//$seawall.scrollTop(this.scrollTop);
+			self.moveSeaWall(this.percentage);
 			SUBMERSIBLE.camera.position.setY(this.cameraY);
 		}).start();
+	},
+	moveSeaWall : function(percentage) {
+		this.percentage = percentage;
+		percentage /= 100;
+		//percentage = percentage / (100 / 3);
+		//draw the seaWallCanvas at whatever offset
+		var width = this.seaWallContext.canvas.width;
+		var height = this.seaWallContext.canvas.height;
+		this.seaWallContext.clearRect(0, 0, width, height);
+		var srcHeight = this.seaWallCanvas.height;
+		this.seaWallContext.drawImage(this.seaWallCanvas, 0, srcHeight * percentage, width, srcHeight / 4, 0, 0, width, height);
+	},
+	makeSeaWall : function() {
+		//creates an offscreen canvas with a gradient which is rendered to the background canvas
+		this.seaWallCanvas = document.createElement('canvas');
+		var context = this.seaWallCanvas.getContext('2d');
+		var width = $(document).width();
+		var height = $(document).height() * 4;
+		context.canvas.width = width;
+		context.canvas.height = height;
+		var grd = context.createLinearGradient(0, 0, 0, height);
+		// #4ba2d1 0%,#2989d8 22%,#252fc4 28%,#162d89 47%,#180E59 53%,#000000 72%
+		grd.addColorStop(0, "#4ba2d1");
+		grd.addColorStop(.22, "#2989d8");
+		grd.addColorStop(.28, "#252fc4");
+		grd.addColorStop(.47, "#162d89");
+		grd.addColorStop(.53, "#180E59");
+		grd.addColorStop(.72, "#000000");
+		grd.addColorStop(1, "#000000");
+		context.fillStyle = grd;
+		context.fillRect(0, 0, width, height);
+		//setup the seaWallContext
+		this.$seaWall = $("#seaWall");
+		this.seaWallContext = this.$seaWall[0].getContext("2d");
+		this.seaWallContext.canvas.width = width;
+		this.seaWallContext.canvas.height = height / 4;
 	},
 })
 
@@ -361,11 +401,17 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 		if(started) {
 			//queue the start in time
 			this.listenToOnce(SUBMERSIBLE.metronome, "change:1n", this.startSounds);
+			this.makeGains();
+			//set the gain of the current zone;
+			this.changeZoneSound(this.model, this.model.get("zone"));
+			//start the metro
+			SUBMERSIBLE.metronome.start();
 		}
 	},
-	startSounds : function(model, quarterNode, time) {
-		this.makeGains();
+	startSounds : function(model, bar, time) {
+		//start the metronome
 		var context = SUBMERSIBLE.context;
+		//if(bar % 16 === 0) {
 		//make a buffer player and connect all of the sounds
 		for(var g = 0; g < this.buffers.length; g++) {
 			var gain = this.gains[g];
@@ -377,8 +423,7 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 			source.connect(gain);
 			source.noteOn(time);
 		}
-		//set the gain of the current zone;
-		this.changeZoneSound(this.model, this.model.get("zone"));
+		//}
 	},
 	makeGains : function() {
 		this.gains = [];
@@ -397,29 +442,143 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
  * THE SUBMARINE CONTROLS
  */
 SUBMERSIBLE.Controls = Backbone.View.extend({
+
+	events : {
+		"click #upArrowTouch" : "goUp",
+		"click #downArrowTouch" : "goDown",
+	},
+
 	initialize : function() {
+		this.setElement($("#cockpit"));
 		this.listenTo(this.model, "change:started", this.startControls);
+		//make the canvas/context
+		this.$canvas = this.$el.find("#zoneIndicatorBulb");
+		this.context = this.$canvas[0].getContext("2d");
+		this.context.canvas.width = this.$canvas.width();
+		this.context.canvas.height = this.$canvas.height();
+		//draw the zone for the first time
+		var zonePercent = (SUBMERSIBLE.model.get("zone") / 3) * 100;
+		this.percentage = zonePercent;
+		this.drawBulb(zonePercent);
+		//listen for changes in the zone
+		this.listenTo(SUBMERSIBLE.model, "change:zone", this.changeZone);
+		//get the highlighted arrows
+		this.$upArrow = this.$el.find("#upArrow");
+		this.$downArrow = this.$el.find("#downArrow");
 	},
 	startControls : function(model, started) {
 		//bind the events once it starts so it doesn't throw any errors in loading
 		this.bindEvents();
 	},
 	bindEvents : function() {
+		var self = this;
 		//listen for the arrow keys
 		$(document).keydown(function(e) {
 			//arrow up
 			if(e.keyCode === 38) {
-				SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") - 1, {
-					validate : true,
-				});
+				self.goUp(e);
 				return false;
 			} else if(e.keyCode === 40) {
-				SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") + 1, {
-					validate : true,
-				});
+				self.goDown(e);
 				return false;
 			}
 		});
+	},
+	drawBulb : function(percent) {
+		//flip the percent
+		this.percentage = percent;
+		percent = 100 - percent;
+		var width = this.$canvas.width();
+		var height = this.$canvas.height();
+		var radius = Math.min(width, height) / 4;
+		var x = width / 2;
+		var y = height / 2;
+		var context = this.context;
+		context.strokeStyle = "#fff";
+		context.lineWidth = 2;
+		//first clear the canvas
+		context.clearRect(0, 0, width, height);
+		//now draw the large circle
+		context.beginPath();
+		context.fillStyle = "#fff";
+		context.arc(x, y, radius, 0, 2 * Math.PI, false);
+		context.fill();
+		context.stroke();
+		context.closePath();
+		//now the indicator level
+		context.beginPath();
+		context.fillStyle = "#000";
+		//var angle = Math.PI * (percent / 100);
+		var indicatorHeight = radius * 2 * ((percent - 50) / 100);
+		context.arc(x, y, radius, 0, Math.PI, false);
+		context.moveTo(x - radius, y);
+		context.bezierCurveTo(x - radius, y + indicatorHeight, x + radius, y + indicatorHeight, x + radius, y);
+		context.fill();
+		context.stroke();
+		context.closePath();
+		//also write the depth text
+		context.fillStyle = "#fff"
+		context.font = 'normal 10px sans-sarif';
+		var depth = parseInt(INTERPOLATE.exponential(percent + 1, 1, 101, 5000, 20));
+		var depthText = "depth: " + depth + "m";
+		if(depth < 200) {
+			var zone = "epipalegic";
+		} else if(depth < 1000) {
+			var zone = "mesopalegic";
+		} else if(depth < 4000) {
+			var zone = "bathypalegic";
+		} else {
+			var zone = "abyssopalegic";
+		}
+		context.fillText(zone, x - radius * 2.5, y + radius / 2);
+		context.fillText(depthText, x - radius * 2.5, y + radius);
+	},
+	changeZone : function(model, zone) {
+		var zonePercent = (zone / 3) * 100;
+		//find the zone change
+		var diff = Math.abs(zone - model.previous("zone"));
+		var animationTime = 5000 * diff;
+		var zoneDifference = model.get("zoneDifference");
+		if(this.zoneTween) {
+			this.zoneTween.stop();
+		}
+		var self = this;
+		this.zoneTween = new TWEEN.Tween({
+			percentage : self.percentage
+		}).to({
+			percentage : zonePercent,
+		}, animationTime).easing(TWEEN.Easing.Quadratic.InOut).onUpdate(function() {
+			self.drawBulb(this.percentage);
+		}).start();
+	},
+	goUp : function(event) {
+		SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") - 1, {
+			validate : true,
+		});
+		//put the highlight in front, and take it away after a bit
+		var arrow = this.$upArrow;
+		arrow.css({
+			"z-index" : 100,
+		})
+		setTimeout(function() {
+			arrow.css({
+				"z-index" : -1,
+			})
+		}, 300)
+	},
+	goDown : function(event) {
+		SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") + 1, {
+			validate : true,
+		});
+		var arrow = this.$downArrow;
+		arrow.css({
+			"z-index" : 100,
+		})
+		setTimeout(function() {
+			arrow.css({
+				"z-index" : -1,
+			})
+		}, 300)
 	}
 });
 

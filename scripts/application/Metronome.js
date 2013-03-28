@@ -35,15 +35,15 @@ SUBMERSIBLE.Metronome = Backbone.Model.extend({
 		this.tatum = 0;
 		//this.phase = 0;
 		//make the wave watcher
-		this.scriptNode = SUBMERSIBLE.context.createJavaScriptNode(4096, 1, 1);
+		this.scriptNode = SUBMERSIBLE.context.createJavaScriptNode(2048, 1, 1);
 		this.scriptNode.connect(SUBMERSIBLE.context.destination);
 		//setup the callback
 		this.createScriptCallback();
 		//the amount of delay that's applied to all callbacks
-		this.delay = 0.3
+		this.delay = 0;
 		//listen to the changes
 		this.on("change:bpm", this.setBPM);
-		this.on("change:4n", this.incrementBeat);
+		//this.on("change:4n", this.incrementBeat);
 	},
 	setBPM : function(model) {
 		var bpm = model.get("bpm");
@@ -61,7 +61,7 @@ SUBMERSIBLE.Metronome = Backbone.Model.extend({
 		}
 		//trigger an event on this bar/beat
 		//events are in the form bar.beat
-		this.trigger(bar + "." + beat);
+		//this.trigger(bar + "." + beat);
 	},
 	//based on a 64th note tick
 	tickTatum : function(time) {
@@ -78,7 +78,9 @@ SUBMERSIBLE.Metronome = Backbone.Model.extend({
 			if(tatum % (tatumsPerMeasure / sub) === 0) {
 				var count = this.get(subStr);
 				count++;
-				count = count % sub;
+				if(i !== 0) {
+					count = count % sub;
+				}
 				//set the increment with the time
 				this.set(subStr, count, time);
 			}

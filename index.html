@@ -3,8 +3,8 @@
 	<title>SUBMERSIBLE</title>
 	<!--link rel="icon" type="image/png" href="./images/favicon.png"-->
 	<!--STYLE SHEETS-->
-	 <link rel="stylesheet" href="style/submersible.css" />
-	 <link rel="stylesheet" href="style/jquery-ui-1.9.2.custom.css" />
+	<link rel="stylesheet" href="style/submersible.css" />
+	<link rel="stylesheet" href="style/jquery-ui-1.9.2.custom.css" />
 	<!--DEPENDENCIES-->
 	<script type="text/javascript" charset="UTF-8" src="./scripts/dependencies/jquery.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="./scripts/dependencies/jquery.transit.js"></script>
@@ -27,18 +27,29 @@
 </head>
 <body>
 	<div id="loadingScreen">
-		<div id='title'>SUBMERSIBLE</div>
+		<div id='title'>
+			SUBMERSIBLE
+		</div>
 		<div id="loadingBar">
 			<div id="loadedArea"></div>
 		</div>
 	</div>
 	<div id="container">
 		<div id="cockpit">
+			<div id="consoleContainer">
+				<div id='console'>
+					<canvas id='zoneIndicatorBulb'></canvas>
+				</div>
+			</div>
 			<img id='background' src="./images/cockpit.png">
+			<div id="upArrowTouch"></div>
+			<div id="downArrowTouch"></div>
+			<img id='upArrow' class="arrow" src="./images/up-arrow.png">
+			<img id='downArrow' class="arrow" src="./images/down-arrow.png">
 		</div>
-		<div id='seaWall'>
-			<div id='seaWallGradient'></div>
-		</div>
+		<canvas id='seaWall'>
+			<!--div id='seaWallGradient'></div-->
+		</canvas>
 		<div id="canvas"></div>
 	</div>
 </body>

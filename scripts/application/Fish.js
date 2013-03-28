@@ -219,6 +219,7 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		this.sprite = new THREE.Particle(new THREE.ParticleCanvasMaterial({
 			color : Math.random() * 0x808080 + 0x808080,
 			program : drawProgram,
+			overdraw : true,
 			useScreenCoordinates : true,
 		}));
 		var ratio = this.model.get("imageHeight") / (this.model.get("imageWidth") / this.model.get("gifCount"));

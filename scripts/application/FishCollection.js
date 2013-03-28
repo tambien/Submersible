@@ -38,14 +38,14 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 					//add that fish to the collection
 					var f = new SUBMERSIBLE.Fish(fish.attributes, fish.options);
 					this.add(f);
-					return f;
+					//return f;
 				}
 			}
 		}
 	},
 	//initially fill the ocean with fish so that it's not empty when you start
 	fillZone : function() {
-		for(var i = 0; i < 30; i++) {
+		for(var i = 0; i < 10; i++) {
 			var fish = this.addFish(1000);
 			if (fish){
 				fish.putInCenter();
