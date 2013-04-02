@@ -63,8 +63,8 @@ var SUBMERSIBLE = function() {
 		SUBMERSIBLE.fishOutput.gain.value = 1;
 		//more like a limiter than compressor
 		SUBMERSIBLE.fishCompressor = audioContext.createDynamicsCompressor();
-		SUBMERSIBLE.fishCompressor.threshold.value = -15;
-		SUBMERSIBLE.fishCompressor.ratio.value = 20;
+		SUBMERSIBLE.fishCompressor.threshold.value = -30;
+		SUBMERSIBLE.fishCompressor.ratio.value = 8;
 		//connect it up
 		SUBMERSIBLE.fishOutput.connect(SUBMERSIBLE.fishCompressor);
 		SUBMERSIBLE.fishCompressor.connect(audioContext.destination)
