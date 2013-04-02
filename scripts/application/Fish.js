@@ -51,6 +51,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			audible : false,
 			offbeat : seedValue % 2 === 0,
 			subdivision : "4n",
+			beatRepeat : 4,
 			//sound : "silence.mp3"
 		}
 	},
@@ -60,7 +61,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			this.swim = options.swim;
 		}
 		//set the position and direction
-		this.putOnScreen();
+		//this.putOnScreen();
 		//start hte timer
 		this.fishTime = 0;
 		//the view
@@ -73,6 +74,8 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		//set the gif offset initially using the seed value so that images
 		//put on the screen at the same time, don't have hte same movements
 		this.set("gifOffset", this.get("seedValue") % this.get("gifCount"));
+		//listen for visibility changes and put the fish on the screen
+		this.on("change:visible", this.putOnScreen);
 	},
 	//ADD/REMOVE FISH//////////////////////////////////////////////////////////
 	getScreenWidthFromZ : function(z) {
@@ -84,45 +87,48 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		return visibleWidth / 2
 	},
 	//sets the direction vectors as well based on the position
-	putOnScreen : function() {
-		//either put it way back
-		var zoneDiff = SUBMERSIBLE.model.get("zoneDifference");
-		var currentZone = -SUBMERSIBLE.model.get("zone");
-		var zoneMin = currentZone * zoneDiff + zoneDiff / 2;
-		var zoneMax = currentZone * zoneDiff - zoneDiff / 2;
-		var position = this.get('position');
-		position.y = RANDOM.getInt(zoneMin, zoneMax);
-		var direction = this.get("direction");
-		if(this.get("foreground")) {
-			//either coming from the right or left side
-			//pick a random z
-			var zPos = RANDOM.getInt(-3000, -2000);
-			position.z = zPos;
-			var halfWidth = this.getScreenWidthFromZ(zPos) + this.get("size");
+	putOnScreen : function(model, visible) {
+		if(visible) {
+			//either put it way back
+			var zoneDiff = SUBMERSIBLE.model.get("zoneDifference");
+			var currentZone = -SUBMERSIBLE.model.get("zone");
+			var zoneMin = currentZone * zoneDiff + zoneDiff / 2;
+			var zoneMax = currentZone * zoneDiff - zoneDiff / 2;
+			var position = this.get('position');
+			position.y = RANDOM.getInt(zoneMin, zoneMax);
+			var direction = this.get("direction");
+			if(this.get("foreground")) {
+				//either coming from the right or left side
+				//pick a random z
+				var zPos = RANDOM.getInt(-3000, -2000);
+				position.z = zPos;
+				var halfWidth = this.getScreenWidthFromZ(zPos) + this.get("size");
 
-			if(RANDOM.flipCoin()) {
-				position.x = -halfWidth;
-				direction.setX(1);
+				if(RANDOM.flipCoin()) {
+					position.x = -halfWidth;
+					direction.setX(1);
+				} else {
+					position.x = halfWidth;
+					direction.setX(-1);
+				}
+				direction.setZ(RANDOM.getFloat(-.2, .2));
 			} else {
-				position.x = halfWidth;
-				direction.setX(-1);
+				position.z = -6001;
+				var halfWidth = this.getScreenWidthFromZ(position.z) / 2 - this.get("size") * 4;
+				position.x = RANDOM.getInt(-halfWidth, halfWidth);
+				//could be swimming left or right
+				direction.setX(RANDOM.flipCoin() ? -1 : 1);
+				direction.setZ(RANDOM.getFloat(.2));
 			}
-			direction.setZ(RANDOM.getFloat(-.2, .2));
-		} else {
-			position.z = -6001;
-			var halfWidth = this.getScreenWidthFromZ(position.z) - this.get("size") * 4;
-			position.x = RANDOM.getInt(-halfWidth, halfWidth);
-			//could be swimming left or right
-			direction.setX(RANDOM.flipCoin() ? -1 : 1);
-			direction.setZ(RANDOM.getFloat(.2));
+			direction.setY(RANDOM.getFloat(-.1, .1));
+			this.getDirectionVectorFromAngles();
 		}
-		direction.setY(RANDOM.getFloat(-.1, .1));
-		this.getDirectionVectorFromAngles();
+
 	},
 	//puts the object in the center of teh screen, useful for when switching palegic zones
 	putInCenter : function() {
 		var position = this.get('position');
-		var zPos = RANDOM.getInt(-6000, -2000);
+		var zPos = RANDOM.getInt(-6000, -500);
 		position.z = zPos;
 		var halfWidth = this.getScreenWidthFromZ(zPos) + this.get("size");
 		position.x = RANDOM.getInt(-halfWidth, halfWidth);
@@ -135,11 +141,12 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 	//removes the model from the collection, makes it inaudible, and removes the sprite
 	remove : function() {
 		this.set("audible", false);
+		this.set("visible", false);
 		//stop listening
-		this.stopListening();
-		this.view.remove();
-		this.sound.remove();
-		this.collection.remove(this);
+		//this.stopListening();
+		//this.view.remove();
+		//this.sound.remove();
+		//this.collection.remove(this);
 	},
 	//UPDATE FUNCTIONS/////////////////////////////////////////////////////////
 	update : function(scalar, timestep) {
@@ -156,9 +163,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 		//move the submarine
 		this.moveSubmersible(scalar);
 		//update the view
-		this.view.positionFish(this);
-		//update the sound position
-		this.sound.update(scalar);
+		//this.view.positionFish(this);
 	},
 	moveSubmersible : function(scalar) {
 		var pos = this.get('position');
@@ -217,7 +222,6 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		var gifCount = this.model.get('gifCount');
 		var drawProgram = this.drawImage.bind(this);
 		this.sprite = new THREE.Particle(new THREE.ParticleCanvasMaterial({
-			color : Math.random() * 0x808080 + 0x808080,
 			program : drawProgram,
 			overdraw : true,
 			useScreenCoordinates : true,
@@ -227,32 +231,42 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 		this.sprite.scale.y = this.model.get("size") * ratio;
 		//add it to the scene
 		SUBMERSIBLE.scene.add(this.sprite);
-		//position the fish initially
 		this.positionFish(this.model);
-		//setup the gifTime
+		//intially note visible
+		this.sprite.visible = false;
+		//position the fish initially
+		//this.positionFish(this.model);
+		//setup the gifOffset based on the seed value
+		this.model.set("gifOffset", this.model.get("seedValue") % this.model.get("gifCount"));
 		this.gifTime = 0;
 		//listen to the beat changes
-		var changeString = "change:" + this.model.get("subdivision");
+		//var changeString = "change:" + this.model.get("subdivision");
 		//this.listenTo(SUBMERSIBLE.metronome, changeString, this.beat);
+		this.listenTo(this.model, "change:visible", this.changeVisible);
+	},
+	changeVisible : function(model, visible) {
+		this.sprite.visible = visible;
 	},
 	//draws the image in the context
 	drawImage : function(context) {
-		//why do they come out upside down?
-		var model = this.model;
-		var gifOffset = model.get("gifOffset");
-		var gifCount = model.get("gifCount");
-		var imageWidth = model.get("imageWidth") / gifCount;
-		var imagePosition = gifOffset * imageWidth;
+		if(this.model.get("visible")) {
+			//why do they come out upside down?
+			var model = this.model;
+			var gifOffset = model.get("gifOffset");
+			var gifCount = model.get("gifCount");
+			var imageWidth = model.get("imageWidth") / gifCount;
+			var imagePosition = gifOffset * imageWidth;
 
-		context.save();
+			context.save();
 
-		var direction = model.get("direction");
-		if(direction.x > 0) {
-			context.translate(0.5, 0.5);
-			context.scale(1, -1);
+			var direction = model.get("direction");
+			if(direction.x > 0) {
+				context.translate(0.5, 0.5);
+				context.scale(1, -1);
+			}
+			context.drawImage(model.get("image"), imagePosition, 0, imageWidth, model.get("imageHeight"), 0, 0, 1, 1);
+			context.restore();
 		}
-		context.drawImage(model.get("image"), imagePosition, 0, imageWidth, model.get("imageHeight"), 0, 0, 1, 1);
-		context.restore();
 	},
 	positionFish : function(model) {
 		if(this.sprite) {
@@ -262,11 +276,16 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 			this.sprite.rotation.z = -phi
 			this.sprite.rotation.y = model.get("theta");
 			//add the translations
-			this.sprite.translateZ(this.model.get("horizontal"));
-			this.sprite.translateY(this.model.get("vertical"));
+			//this.sprite.translateZ(this.model.get("horizontal"));
+			//this.sprite.translateY(this.model.get("vertical"));
 			var opacity = INTERPOLATE.linear(position.z, -6000, -2500, 0, 1, true);
 			this.sprite.material.opacity = opacity * opacity;
 		}
+	},
+	updateOpacity : function() {
+		var position = this.model.get("position");
+		var opacity = INTERPOLATE.linear(position.z, -6000, -2500, 0, 1, true);
+		this.sprite.material.opacity = opacity// * opacity;
 	},
 	moveGif : function(timestep) {
 		var gifTime = this.gifTime;
@@ -315,11 +334,6 @@ SUBMERSIBLE.Fish.Sound = Backbone.View.extend({
 			//make the gain
 			this.gain = context.createGainNode();
 			this.gain.gain.value = 0;
-			//and the source node
-			this.source = context.createBufferSource();
-			//set hte buffer
-			this.source.buffer = this.model.get("sound");
-			this.source.loop = true;
 			//make the panner node
 			this.panner = context.createPanner();
 			//this.panner.panningModel = 'equalpower';
@@ -327,15 +341,18 @@ SUBMERSIBLE.Fish.Sound = Backbone.View.extend({
 			this.lowpass = context.createBiquadFilter();
 			//this.panner.rolloffFactor = 2;
 			//connect it up
-			this.source.connect(this.lowpass);
+			//this.source.connect(this.lowpass);
 			this.lowpass.connect(this.panner);
 			this.panner.connect(this.gain);
 			this.gain.connect(SUBMERSIBLE.fishOutput);
 			//add the event listeners
 			this.listenTo(this.model, "change:audible", this.setVolume);
 			//start the fish on the next metro tick
-			var changeString = "change:" + this.model.get("subdivision");
-			this.listenToOnce(SUBMERSIBLE.metronome, changeString, this.start);
+			var address = "/metro/" + this.model.get("subdivision");
+			this.router = MSG.route(address, this.beat.bind(this));
+			//set the beat count based on the random seed
+			//this.beatCount = this.model.get("seedValue") % this.model.get("beatRepeat");
+			this.beatCount = 0;
 		}
 	},
 	setVolume : function(model, audible) {
@@ -350,6 +367,24 @@ SUBMERSIBLE.Fish.Sound = Backbone.View.extend({
 		this.model.set("offbeat", beatNum % 2 === 1);
 		this.source.noteOn(beatTime);
 	},
+	beat : function(msg) {
+		if(this.beatCount % this.model.get("beatRepeat") === 0) {
+			this.playSound(msg.timetag);
+		}
+		this.beatCount++;
+	},
+	playSound : function(timetag) {
+		if(this.model.get("visible")) {
+			//and the source node
+			var source = SUBMERSIBLE.context.createBufferSource();
+			//set hte buffer
+			source.buffer = this.model.get("sound");
+			source.loop = false;
+			//connect it to the lowpass
+			source.connect(this.lowpass);
+			source.noteOn(timetag);
+		}
+	},
 	update : function(scalar) {
 		if(this.panner) {
 			//move the panner node to the current position
@@ -363,7 +398,7 @@ SUBMERSIBLE.Fish.Sound = Backbone.View.extend({
 	},
 	remove : function() {
 		//stop the buffer
-		this.stopListening();
+		MSG.unroute(this.router);
 		var now = SUBMERSIBLE.context.currentTime;
 		if(this.source) {
 			this.source.noteOff(now + 1.2);

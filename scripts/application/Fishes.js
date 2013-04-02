@@ -65,7 +65,7 @@ SUBMERSIBLE.Fishes = [{
 }, {
 	name : "shark",
 	//after how many seconds does one appear (on average)?
-	probability : 4,
+	probability : Infinity,
 	attributes : {
 		//specs
 		size : 600,
@@ -79,7 +79,8 @@ SUBMERSIBLE.Fishes = [{
 		//the palegic zone 0 - 3
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
-		sound : "shark.mp3"
+		//sound : "shark.mp3",
+		beatRepeat : 8,
 	},
 }, {
 	name : "jellyTwo",
@@ -99,7 +100,7 @@ SUBMERSIBLE.Fishes = [{
 		//the palegic zone 0 - 3
 		palegicZone : [1, 3],
 		//the audio file of the fish sound
-		sound : "silence.mp3"
+		//sound : "silence.mp3"
 	},
 	options : {
 		swim : function(ramp) {
@@ -111,7 +112,7 @@ SUBMERSIBLE.Fishes = [{
 }, {
 	name : "simpleFishTwo",
 	//after how many seconds does one appear (on average)?
-	probability : 3,
+	probability : Infinity,
 	attributes : {
 		//specs
 		size : 250,
@@ -125,17 +126,25 @@ SUBMERSIBLE.Fishes = [{
 		//the palegic zone 0 - 3
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
-		sound : "sadFish.mp3"
+		sound : "sadFish.mp3",
+		beatRepeat : 8,
 	},
-}, {
+}, 
+/*
+ * BACKGROUND BUBBLES
+ */
+{
 	name : "zone0Bubble",
 	//after how many seconds does one appear (on average)?
 	probability : .5,
+	count : 30,
 	attributes : {
 		//specs
 		size : 100,
 		speed : 0,
-		subdivision : "1n",
+		subdivision : "16n",
+		beatRepeat : 15,
+		sound : "bubble0_2.mp3",
 		//images
 		image : "radiating-bubble.png",
 		gifCount : 10,
@@ -144,7 +153,10 @@ SUBMERSIBLE.Fishes = [{
 		gate : 2000,
 		//the palegic zone 0 - 3
 		palegicZone : [0, 0],
+		//if it's a bubble
+		backgroundBubble : true,
 	},
+	/*
 	options : {
 		swim : function(ramp) {
 			var pitch = INTERPOLATE.sinusoidal(ramp, 0, 1, -1, 1);
@@ -152,4 +164,77 @@ SUBMERSIBLE.Fishes = [{
 			this.set("vertical", pitch);
 		},
 	}
+	*/
+},
+{
+	name : "zone1Bubble",
+	//after how many seconds does one appear (on average)?
+	probability : .5,
+	count : 30,
+	attributes : {
+		//specs
+		size : 100,
+		speed : 0,
+		subdivision : "16n",
+		beatRepeat : 15,
+		sound : "bubble1.mp3",
+		//images
+		image : "zone-2-bubble-sequence.png",
+		gifCount : 8,
+		gifDuration : 100,
+		foreground: false,
+		gate : 2000,
+		//the palegic zone 0 - 3
+		palegicZone : [1, 1],
+		//if it's a bubble
+		backgroundBubble : true,
+	},
+},
+{
+	name : "zone2Bubble",
+	//after how many seconds does one appear (on average)?
+	probability : .5,
+	count : 30,
+	attributes : {
+		//specs
+		size : 100,
+		speed : 0,
+		subdivision : "16n",
+		beatRepeat : 15,
+		sound : "bubble2.mp3",
+		//images
+		image : "zone-3-bubble-sequence.png",
+		gifCount : 8,
+		gifDuration : 100,
+		foreground: false,
+		gate : 2000,
+		//the palegic zone 0 - 3
+		palegicZone : [2, 2],
+		//if it's a bubble
+		backgroundBubble : true,
+	},
+},
+{
+	name : "zone3Bubble",
+	//after how many seconds does one appear (on average)?
+	probability : .5,
+	count : 30,
+	attributes : {
+		//specs
+		size : 100,
+		speed : 0,
+		subdivision : "16n",
+		beatRepeat : 15,
+		sound : "bubble3.mp3",
+		//images
+		image : "zone-4-bubble-sequence.png",
+		gifCount : 6,
+		gifDuration : 100,
+		foreground: false,
+		gate : 2000,
+		//the palegic zone 0 - 3
+		palegicZone : [3, 3],
+		//if it's a bubble
+		backgroundBubble : true,
+	},
 }];

@@ -26,9 +26,11 @@ var SUBMERSIBLE = function() {
 			model : SUBMERSIBLE.model,
 		})
 		//the metronome
+		/*
 		SUBMERSIBLE.metronome = new SUBMERSIBLE.Metronome({
-			bpm : 96,
+		bpm : 96,
 		});
+		*/
 		//make the controls
 		SUBMERSIBLE.controls = new SUBMERSIBLE.Controls({
 			model : SUBMERSIBLE.model,
@@ -58,10 +60,10 @@ var SUBMERSIBLE = function() {
 		SUBMERSIBLE.output = audioContext.createGainNode();
 		//a special output just for fish
 		SUBMERSIBLE.fishOutput = audioContext.createGainNode();
-		SUBMERSIBLE.fishOutput.gain.value = .5;
+		SUBMERSIBLE.fishOutput.gain.value = 1;
 		//more like a limiter than compressor
 		SUBMERSIBLE.fishCompressor = audioContext.createDynamicsCompressor();
-		SUBMERSIBLE.fishCompressor.threshold.value = -10;
+		SUBMERSIBLE.fishCompressor.threshold.value = -15;
 		SUBMERSIBLE.fishCompressor.ratio.value = 20;
 		//connect it up
 		SUBMERSIBLE.fishOutput.connect(SUBMERSIBLE.fishCompressor);
@@ -185,7 +187,7 @@ var SUBMERSIBLE = function() {
 
 	function loadFishSounds() {
 		//load the zone sounds
-		var zoneSounds = ['zone0_2.mp3', 'zone1_2.mp3', 'zone2_2.mp3', 'zone3_2.mp3'];
+		var zoneSounds = ['bass0_2.mp3', 'bass1_2.mp3', 'bass2_2.mp3', 'bass3_2.mp3'];
 		for(var i = 0; i < zoneSounds.length; i++) {
 			loadURL(zoneSounds[i], function(index) {
 				return function(buffer) {
@@ -262,7 +264,8 @@ var SUBMERSIBLE = function() {
 	}
 
 	function render() {
-		requestAnimationFrame(render);
+		//requestAnimationFrame(render);
+		setTimeout(render, 32);
 		if(SUBMERSIBLE.dev) {
 			stats.update();
 		}
@@ -385,7 +388,7 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 		var currentGain = gain.gain.value;
 		gain.gain.cancelScheduledValues(now);
 		gain.gain.setValueAtTime(currentGain, now);
-		gain.gain.linearRampToValueAtTime(.5, now + rampTime);
+		gain.gain.linearRampToValueAtTime(.4, now + rampTime);
 		//fade out the previous gain
 		var previousZone = this.model.previous("zone");
 		var previousGain = this.gains[previousZone];
@@ -400,30 +403,33 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 	queueStart : function(model, started) {
 		if(started) {
 			//queue the start in time
-			this.listenToOnce(SUBMERSIBLE.metronome, "change:1n", this.startSounds);
+			MSG.route("/metro/1n", this.playSounds.bind(this));
 			this.makeGains();
 			//set the gain of the current zone;
 			this.changeZoneSound(this.model, this.model.get("zone"));
 			//start the metro
-			SUBMERSIBLE.metronome.start();
+			METRO.start({
+				bpm : 96,
+				subdivision : ["1n", "2n", "4n", "8n", "16n"]
+			});
 		}
 	},
-	startSounds : function(model, bar, time) {
+	playSounds : function(msg) {
 		//start the metronome
 		var context = SUBMERSIBLE.context;
-		//if(bar % 16 === 0) {
-		//make a buffer player and connect all of the sounds
-		for(var g = 0; g < this.buffers.length; g++) {
-			var gain = this.gains[g];
-			var buffer = this.buffers[g];
-			//make the buffer player
-			var source = context.createBufferSource();
-			source.buffer = buffer;
-			source.loop = true;
-			source.connect(gain);
-			source.noteOn(time);
+		if(msg.data % 8 === 0) {
+			//make a buffer player and connect all of the sounds
+			for(var g = 0; g < this.buffers.length; g++) {
+				var gain = this.gains[g];
+				var buffer = this.buffers[g];
+				//make the buffer player
+				var source = context.createBufferSource();
+				source.buffer = buffer;
+				source.loop = false;
+				source.connect(gain);
+				source.noteOn(msg.timetag);
+			}
 		}
-		//}
 	},
 	makeGains : function() {
 		this.gains = [];
