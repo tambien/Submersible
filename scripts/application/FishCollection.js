@@ -41,7 +41,7 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 			//update the sound position
 			//model.sound.update();
 		});
-		this.addFish(timestep);
+		//this.addFish(timestep);
 	},
 	/*
 	 addFish : function(step) {
@@ -62,33 +62,18 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 	 }
 	 }
 	 },*/
-	addFish : function(step) {
-		var onceAsecond = step * (1 / 500);
-		if(RANDOM.getFloat() < onceAsecond) {
-			//get the fish that are in this zone
-			var currentZone = SUBMERSIBLE.model.get("zone");
-			var fishInZone = this.filter(function(model) {
-				var zoneArray = model.get("palegicZone");
-				return (zoneArray[0] <= currentZone && zoneArray[1] >= currentZone);
-			})
-			var fish = RANDOM.choose(fishInZone);
-			fish.set("visible", true);
-		}
+	addFish : function() {
+		//get the fish that are in this zone
+		var currentZone = SUBMERSIBLE.model.get("zone");
+		var fishInZone = this.filter(function(model) {
+			var zoneArray = model.get("palegicZone");
+			return (zoneArray[0] <= currentZone && zoneArray[1] >= currentZone);
+		})
+		var fish = RANDOM.choose(fishInZone);
+		fish.set("visible", true);
 	},
 	addBubble : function() {
-		for(var fishNum = 0; fishNum < SUBMERSIBLE.Fishes.length; fishNum++) {
-			var fish = SUBMERSIBLE.Fishes[fishNum];
-			if(fish.attributes.backgroundBubble) {
-				var zoneMin = fish.attributes.palegicZone[0];
-				var zoneMax = fish.attributes.palegicZone[1];
-				var currentZone = SUBMERSIBLE.model.get("zone");
-				if(zoneMin <= currentZone && zoneMax >= currentZone) {
-					var b = new SUBMERSIBLE.Fish(fish.attributes, fish.options);
-					b.putInCenter();
-					this.add(b);
-				}
-			}
-		}
+		
 	},
 	//initially fill the ocean with fish so that it's not empty when you start
 	fillZone : function() {
@@ -109,13 +94,14 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 			return (zoneArray[0] <= currentZone && zoneArray[1] >= currentZone && model.get("backgroundBubble") && !model.get("visible"));
 		})
 		//put a quarter of the bubbles on the screen
-		for (var i = 0; i < bubbles.length/4; i++){
+		for(var i = 0; i < bubbles.length / 4; i++) {
 			var model = bubbles[i];
 			model.set("visible", true);
 			model.putInCenter();
 		}
 	},
 	slowUpdate : function() {
+		this.addFish();
 		var visible = this.where({
 			"visible" : true,
 		})
@@ -123,7 +109,7 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 			model.offscreenTest();
 			//update the sound position
 			model.sound.update();
-			model.view.updateOpacity(model);
+			model.view.positionFish(model);
 		});
 	}
 });

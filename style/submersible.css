@@ -142,18 +142,18 @@ body {
 }
 #cockpit #upArrowTouch {
 	position: absolute;
-	left: 58.1%;
-	top: 83.8%;
-	width: 4.7%;
+	left: 56.1%;
+	top: 84.5%;
+	width: 3%;
 	height: 8%;
 	z-index: 1000;
 	opacity: 0;
 }
 #cockpit #downArrowTouch {
 	position: absolute;
-	left: 59.5%;
-	top: 91.8%;
-	width: 4.7%;
+	left: 58.8%;
+	top: 87.1%;
+	width: 3.5%;
 	height: 8%;
 	z-index: 1000;
 	opacity: 0;

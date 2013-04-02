@@ -122,6 +122,8 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			}
 			direction.setY(RANDOM.getFloat(-.1, .1));
 			this.getDirectionVectorFromAngles();
+			//position the view initially
+			this.view.positionFish(this);
 		}
 
 	},
@@ -390,7 +392,7 @@ SUBMERSIBLE.Fish.Sound = Backbone.View.extend({
 			//move the panner node to the current position
 			var position = this.model.get("position").clone();
 			//set the lowpass freq based on the z
-			this.lowpass.frequency.value = INTERPOLATE.logarithmic(position.z, -6000, -1000, 100, 20000, true);
+			this.lowpass.frequency.value = INTERPOLATE.logarithmic(position.z, -6000, -2000, 20, 20000, true);
 			//scale things properly
 			position.divideScalar(1000);
 			this.panner.setPosition(position.x, 0, position.z);

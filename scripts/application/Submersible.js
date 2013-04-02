@@ -264,8 +264,8 @@ var SUBMERSIBLE = function() {
 	}
 
 	function render() {
-		//requestAnimationFrame(render);
-		setTimeout(render, 32);
+		requestAnimationFrame(render);
+		//setTimeout(render, 32);
 		if(SUBMERSIBLE.dev) {
 			stats.update();
 		}
@@ -388,7 +388,8 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 		var currentGain = gain.gain.value;
 		gain.gain.cancelScheduledValues(now);
 		gain.gain.setValueAtTime(currentGain, now);
-		gain.gain.linearRampToValueAtTime(.4, now + rampTime);
+		//gain.gain.linearRampToValueAtTime(.4, now + rampTime);
+		gain.gain.linearRampToValueAtTime(.3, now + rampTime);
 		//fade out the previous gain
 		var previousZone = this.model.previous("zone");
 		var previousGain = this.gains[previousZone];
