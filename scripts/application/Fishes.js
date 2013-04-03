@@ -33,7 +33,7 @@ SUBMERSIBLE.Fishes = [
 		size : 600,
 		mass : 100,
 		speed : 5,
-		subdivision : "2n",
+		subdivision : "4n",
 		//images
 		image : "crayon-shark-sequence.png",
 		gifCount : 6,
@@ -42,7 +42,8 @@ SUBMERSIBLE.Fishes = [
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
 		sound : "shark3.mp3",
-		beatRepeat : 4,
+		beatRepeat : 8,
+		volume : 1.2,
 	},
 }, {
 	name : "tuna",
@@ -67,9 +68,9 @@ SUBMERSIBLE.Fishes = [
 	count : 4,
 	attributes : {
 		//specs
-		size : 200,
+		size : 280,
 		speed : 5,
-		subdivision : "2n",
+		subdivision : "4n",
 		//images
 		image : "Z1-Wolffish.png",
 		gifCount : 1,
@@ -77,8 +78,8 @@ SUBMERSIBLE.Fishes = [
 		//the palegic zone 0 - 3
 		palegicZone : [0, 0],
 		//the audio file of the fish sound
-		//sound : "shark.mp3",
-		//beatRepeat : 8,
+		sound : "wolffish.mp3",
+		beatRepeat : 4,
 	},
 },
 {
@@ -100,6 +101,7 @@ SUBMERSIBLE.Fishes = [
 		//the audio file of the fish sound
 		sound : "dolphin.mp3",
 		beatRepeat : 6,
+		volume : .8,
 	},
 },
 /*
@@ -118,7 +120,7 @@ SUBMERSIBLE.Fishes = [
 		gifCount : 1,
 		gifDuration : 650,
 		//the palegic zone 0 - 3
-		palegicZone : [1, 2],
+		palegicZone : [0, 1],
 		//the audio file of the fish sound
 		sound : "cuddlefish.mp3",
 		beatRepeat : 8,
@@ -137,10 +139,11 @@ SUBMERSIBLE.Fishes = [
 		gifCount : 1,
 		gifDuration : 650,
 		//the palegic zone 0 - 3
-		palegicZone : [1, 1],
+		palegicZone : [1, 2],
 		//the audio file of the fish sound
 		sound : "squid.mp3",
 		beatRepeat : 4,
+		volume : .5,
 	},
 },
 {
@@ -156,10 +159,11 @@ SUBMERSIBLE.Fishes = [
 		gifCount : 1,
 		gifDuration : 650,
 		//the palegic zone 0 - 3
-		palegicZone : [1, 1],
+		palegicZone : [0, 1],
 		//the audio file of the fish sound
-		//sound : "shark.mp3",
-		//beatRepeat : 8,
+		sound : "swordfish.mp3",
+		beatRepeat : 6,
+		volume : .6,
 	},
 },
 /*
@@ -167,11 +171,11 @@ SUBMERSIBLE.Fishes = [
  */
 {
 	name : "eel",
-	count : 4,
+	count : 5,
 	attributes : {
 		//specs
 		size : 150,
-		speed : 7,
+		speed : 6,
 		subdivision : "2n",
 		//images
 		image : "Z3-Eel.png",
@@ -182,17 +186,18 @@ SUBMERSIBLE.Fishes = [
 		//the audio file of the fish sound
 		sound : "eel.mp3",
 		beatRepeat : 4,
+		volume : .5,
 	},
 },
 {
-	name : "jellyTwo",
+	name : "jelly",
 	count : 3,
 	attributes : {
 		//specs
 		size : 450,
 		mass : 10,
 		speed : 2,
-		subdivision : "2n",
+		subdivision : "4t",
 		//images
 		image : "ink-jelly-sequence.png",
 		gifCount : 6,
@@ -201,7 +206,8 @@ SUBMERSIBLE.Fishes = [
 		//the palegic zone 0 - 3
 		palegicZone : [1, 3],
 		//the audio file of the fish sound
-		//sound : "silence.mp3"
+		sound : "jelly2.mp3",
+		beatRepeat : 6,
 	},
 },
 /*
@@ -209,13 +215,13 @@ SUBMERSIBLE.Fishes = [
  */
 {
 	name : "orb",
-	count : 15,
+	count : 10,
 	attributes : {
 		//specs
 		size : 50,
 		mass : 10,
-		speed : 1,
-		subdivision : "8n",
+		speed : 2,
+		subdivision : "4n",
 		//images
 		image : "Z4-LuminescentOrb.png",
 		gifCount : 1,
@@ -224,7 +230,9 @@ SUBMERSIBLE.Fishes = [
 		//the palegic zone 0 - 3
 		palegicZone : [3, 3],
 		//the audio file of the fish sound
-		//sound : "silence.mp3"
+		sound : "orb2.mp3",
+		beatRepeat : 8,
+		volume : .6,
 	},
 },
 {
@@ -234,8 +242,8 @@ SUBMERSIBLE.Fishes = [
 		//specs
 		size : 90,
 		mass : 10,
-		speed : 1,
-		subdivision : "2n",
+		speed : 2,
+		subdivision : "4n",
 		//images
 		image : "Z4-SeaPig.png",
 		gifCount : 1,
@@ -243,28 +251,30 @@ SUBMERSIBLE.Fishes = [
 		foreground : false,
 		//the palegic zone 0 - 3
 		palegicZone : [3, 3],
-		//the audio file of the fish sound
-		//sound : "silence.mp3"
+		sound : "seapig.mp3",
+		beatRepeat : 4,
+		volume : .5,
 	},
 },
 {
 	name : "viperfish",
-	count : 3,
+	count : 4,
 	attributes : {
 		//specs
-		size : 90,
+		size : 250,
 		mass : 10,
-		speed : 1,
+		speed : 5,
 		subdivision : "4n",
 		//images
 		image : "Z4-Viperfish.png",
-		gifCount : 0,
+		gifCount : 1,
 		gifDuration : 530,
 		foreground : false,
 		//the palegic zone 0 - 3
-		palegicZone : [3, 3],
+		palegicZone : [2, 3],
 		//the audio file of the fish sound
-		//sound : "silence.mp3"
+		sound : "viperfish2.mp3",
+		beatRepeat : 6,
 	},
 },
 /*

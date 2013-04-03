@@ -63,7 +63,7 @@ var SUBMERSIBLE = function() {
 		SUBMERSIBLE.fishOutput.gain.value = 1;
 		//more like a limiter than compressor
 		SUBMERSIBLE.fishCompressor = audioContext.createDynamicsCompressor();
-		SUBMERSIBLE.fishCompressor.threshold.value = -30;
+		SUBMERSIBLE.fishCompressor.threshold.value = -40;
 		SUBMERSIBLE.fishCompressor.ratio.value = 8;
 		//connect it up
 		SUBMERSIBLE.fishOutput.connect(SUBMERSIBLE.fishCompressor);
@@ -411,7 +411,7 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 			//start the metro
 			METRO.start({
 				bpm : 96,
-				subdivision : ["1n", "2n", "4n", "8n", "16n"]
+				subdivision : ["1n", "2n", "4n", "4t", "8n", "16n"]
 			});
 		}
 	},

@@ -52,6 +52,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			offbeat : seedValue % 2 === 0,
 			subdivision : "4n",
 			beatRepeat : 4,
+			volume : 1,
 			//sound : "silence.mp3"
 		}
 	},
@@ -359,7 +360,7 @@ SUBMERSIBLE.Fish.Sound = Backbone.View.extend({
 	},
 	setVolume : function(model, audible) {
 		var now = SUBMERSIBLE.context.currentTime;
-		var volume = audible ? 1 : 0;
+		var volume = audible ? model.get("volume") : 0;
 		var currentGain = this.gain.gain.value;
 		this.gain.gain.cancelScheduledValues(now);
 		this.gain.gain.setValueAtTime(currentGain, now);
