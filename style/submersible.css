@@ -177,20 +177,24 @@ INSTRUCTIONS
 }
 #loadingScreen #title {
 	width: 100%;
-	height: 100px;
-	position: absolute;
-	top: 100px;
-	left: 0px;
-	margin-top: -50px;
+	margin-top: 110px;
 	font-size: 72px;
 	font-family: 'Sintony', sans-serif;
 	color: white;
 	text-align: center;
 }
+#loadingScreen #iconHeader {
+	position: absolute;
+	margin-top: 5px;
+	width: 100px;
+	height: 100px;
+	left: 50%;
+	margin-left: -50px;
+}
 #loadingScreen #explaination {
 	width: 600px;
 	position: absolute;
-	top: 180px;
+	top: 240px;
 	left: 50%;
 	margin-left: -300px;
 	font-size: 18px;
@@ -206,7 +210,7 @@ INSTRUCTIONS
 	width: 500px;
 	height: 50px;
 	position: absolute;
-	top: 500px;
+	top: 560px;
 	left: 50%;
 	margin-left: -250px;
 	margin-top: -25px;
