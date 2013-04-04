@@ -93,7 +93,7 @@ INSTRUCTIONS
 	height: 50px;
 	width: 10px;
 	font-size: 20px;
-	font-family: sans-serif;
+	font-family: 'Sintony', sans-serif;
 	color: black;
 }
 #instruction2 #instructionArrow{
@@ -103,15 +103,15 @@ INSTRUCTIONS
 	height: 50px;
 	width: 10px;
 	font-size: 20px;
-	font-family: sans-serif;
+	font-family: 'Sintony', sans-serif;
 	color: black;
 }
 #instructions #body {
 	position: absolute;
 	left: 30px;
-	font-size: 12px;
+	font-size: 11px;
 	width: 125px;
-	font-family: sans-serif;
+	font-family: 'Sintony', sans-serif;
 	color: black;
 }
 
@@ -134,7 +134,7 @@ INSTRUCTIONS
 	float: right;
 	border: 1px solid black;
 	font-size: 10px;
-	font-family: sans-serif;
+	font-family: 'Sintony', sans-serif;
 	color: black;
 	text-align: center;
 	cursor: pointer;
@@ -183,7 +183,7 @@ INSTRUCTIONS
 	left: 0px;
 	margin-top: -50px;
 	font-size: 72px;
-	font-family: sans-serif;
+	font-family: 'Sintony', sans-serif;
 	color: white;
 	text-align: center;
 }
@@ -193,8 +193,8 @@ INSTRUCTIONS
 	top: 180px;
 	left: 50%;
 	margin-left: -300px;
-	font-size: 20px;
-	font-family: sans-serif;
+	font-size: 18px;
+	font-family: 'Sintony', sans-serif;
 	color: white;
 	text-align: left;
 }
@@ -235,7 +235,7 @@ INSTRUCTIONS
 	height: 100%;
 	padding-top: 10px;
 	font-size: 24px;
-	font-family: sans-serif;
+	font-family: 'Sintony', sans-serif;
 	color: white;
 	text-align: center;
 	cursor: pointer;
@@ -262,7 +262,7 @@ INSTRUCTIONS
 	left: 0px;
 	margin-top: -50px;
 	font-size: 72px;
-	font-family: sans-serif;
+	font-family: 'Sintony', sans-serif;
 	color: white;
 	text-align: center;
 }
@@ -274,7 +274,7 @@ INSTRUCTIONS
 	left: 50%;
 	margin-left: -300px;
 	font-size: 20px;
-	font-family: sans-serif;
+	font-family: 'Sintony', sans-serif;
 	color: white;
 	text-align: left;
 }
@@ -362,7 +362,7 @@ INSTRUCTIONS
 	height: 100%;
 }
 #console #depthIndicatorNumbers {
-	font-family: sans-serif;
+	font-family: 'Sintony', sans-serif;
 	font-size: 8px;
 	width: 100%;
 	color: white;
