@@ -167,13 +167,19 @@ INSTRUCTIONS
 	top: 0px;
 	left: 0px;
 	z-index: 10000;
-	background-color: #4ba2d1;
+	background: #4ba2d1;
+	background: -moz-linear-gradient(top,  #4ba2d1 0%, #2989d8 75%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4ba2d1), color-stop(75%,#2989d8)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #4ba2d1 0%,#2989d8 75%,#252fc4); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #4ba2d1 0%,#2989d8 75%,#252fc4); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #4ba2d1 0%,#2989d8 75%,#252fc4); /* IE10+ */
+	background: linear-gradient(to bottom, #4ba2d1 0%,#2989d8 75%,#252fc4); /* W3C */
 }
 #loadingScreen #title {
 	width: 100%;
 	height: 100px;
 	position: absolute;
-	top: 20%;
+	top: 100px;
 	left: 0px;
 	margin-top: -50px;
 	font-size: 72px;
@@ -184,7 +190,7 @@ INSTRUCTIONS
 #loadingScreen #explaination {
 	width: 600px;
 	position: absolute;
-	top: 40%;
+	top: 180px;
 	left: 50%;
 	margin-left: -300px;
 	font-size: 20px;
@@ -192,11 +198,15 @@ INSTRUCTIONS
 	color: white;
 	text-align: left;
 }
+#loadingScreen a {
+	color: #180E59;
+	text-decoration: none;
+}
 #loadingScreen #loadingBar {
 	width: 500px;
 	height: 50px;
 	position: absolute;
-	top: 80%;
+	top: 500px;
 	left: 50%;
 	margin-left: -250px;
 	margin-top: -25px;

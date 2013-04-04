@@ -576,7 +576,7 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 			self.drawBulb(this.percentage);
 		}).start();
 	},
-	goUp : function(event) {
+	goUp : _.throttle(function(event) {
 		SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") - 1, {
 			validate : true,
 		});
@@ -590,8 +590,8 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 				"z-index" : -1,
 			})
 		}, 300)
-	},
-	goDown : function(event) {
+	}, 2500),
+	goDown : _.throttle(function(event) {
 		SUBMERSIBLE.model.set("zone", SUBMERSIBLE.model.get("zone") + 1, {
 			validate : true,
 		});
@@ -604,7 +604,7 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 				"z-index" : -1,
 			})
 		}, 300)
-	}
+	}, 2500),
 });
 
 /*
