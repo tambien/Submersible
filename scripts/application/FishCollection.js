@@ -12,7 +12,7 @@ SUBMERSIBLE.FishCollection = Backbone.Collection.extend({
 		//set a timeout to test offscreenness less frequently
 		this.slowUpdateInterval = setInterval(function(self) {
 			self.slowUpdate();
-		}, 500, this);
+		}, 350, this);
 		//create all of the fish and add them to the collection
 		this.createFish();
 	},

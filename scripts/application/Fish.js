@@ -95,8 +95,8 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			//either put it way back
 			var zoneDiff = SUBMERSIBLE.model.get("zoneDifference");
 			var currentZone = -SUBMERSIBLE.model.get("zone");
-			var zoneMin = currentZone * zoneDiff + zoneDiff / 2;
-			var zoneMax = currentZone * zoneDiff - zoneDiff / 2;
+			var zoneMin = currentZone * zoneDiff + zoneDiff / 4;
+			var zoneMax = currentZone * zoneDiff - zoneDiff / 4;
 			var position = this.get('position');
 			position.y = RANDOM.getInt(zoneMin, zoneMax);
 			var direction = this.get("direction");
@@ -105,7 +105,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 				//pick a random z
 				var zPos = RANDOM.getInt(-3000, -2000);
 				position.z = zPos;
-				var halfWidth = this.getScreenWidthFromZ(zPos) + this.get("size");
+				var halfWidth = this.getScreenWidthFromZ(zPos) + this.get("size")*2;
 
 				if(RANDOM.flipCoin()) {
 					position.x = -halfWidth;
@@ -117,7 +117,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 				direction.setZ(RANDOM.getFloat(-.2, .2));
 			} else {
 				position.z = -6001;
-				var halfWidth = this.getScreenWidthFromZ(position.z) / 2 - this.get("size") * 4;
+				var halfWidth = this.getScreenWidthFromZ(position.z) / 4;
 				position.x = RANDOM.getInt(-halfWidth, halfWidth);
 				//could be swimming left or right
 				direction.setX(RANDOM.flipCoin() ? -1 : 1);

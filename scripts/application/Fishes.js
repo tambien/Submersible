@@ -1,6 +1,9 @@
 /*
  * ALL THE FISH
  */
+
+SUBMERSIBLE.BubbleCount = 25;
+
 SUBMERSIBLE.Fishes = [
 /*
  * ZONE 0
@@ -113,7 +116,7 @@ SUBMERSIBLE.Fishes = [
 	count : 3,
 	attributes : {
 		//specs
-		size : 250,
+		size : 200,
 		speed : 4.5,
 		subdivision : "8n",
 		//images
@@ -303,7 +306,7 @@ SUBMERSIBLE.Fishes = [
  */
 {
 	name : "zone0Bubble",
-	count : 30,
+	count : SUBMERSIBLE.BubbleCount,
 	attributes : {
 		//specs
 		size : 80,
@@ -333,7 +336,7 @@ SUBMERSIBLE.Fishes = [
 	 */
 }, {
 	name : "zone1Bubble",
-	count : 30,
+	count : SUBMERSIBLE.BubbleCount,
 	attributes : {
 		//specs
 		size : 80,
@@ -354,7 +357,7 @@ SUBMERSIBLE.Fishes = [
 	},
 }, {
 	name : "zone2Bubble",
-	count : 30,
+	count : SUBMERSIBLE.BubbleCount,
 	attributes : {
 		//specs
 		size : 80,
@@ -375,7 +378,7 @@ SUBMERSIBLE.Fishes = [
 	},
 }, {
 	name : "zone3Bubble",
-	count : 30,
+	count : SUBMERSIBLE.BubbleCount,
 	attributes : {
 		//specs
 		size : 80,
