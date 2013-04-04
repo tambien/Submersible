@@ -2,7 +2,7 @@
  * ALL THE FISH
  */
 
-SUBMERSIBLE.BubbleCount = 25;
+SUBMERSIBLE.BubbleCount = 20;
 
 SUBMERSIBLE.Fishes = [
 /*

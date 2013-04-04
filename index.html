@@ -17,9 +17,7 @@
 	<script type="text/javascript" charset="UTF-8" src="./scripts/dependencies/Random.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="./scripts/dependencies/Tween.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="./scripts/dependencies/Interpolate.js"></script>
-	<script type="text/javascript" charset="UTF-8" src="./scripts/dependencies/Detector.js"></script>
-	<!--script type="text/javascript" charset="UTF-8" src="../OSCjs/src/MSG.js"></script>
-	<script type="text/javascript" charset="UTF-8" src="../Metronome.js/src/Metro.js"></script-->
+	<script type="text/javascript" charset="UTF-8" src="./scripts/dependencies/modernizr.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="http://tambien.github.com/Metro.js/src/Metro.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="http://tambien.github.com/MSG.js/src/MSG.js"></script>
 	<!--APPLICATION-->
@@ -30,9 +28,42 @@
 	<script type="text/javascript" charset="UTF-8" src="./scripts/application/Metronome.js"></script>
 </head>
 <body>
+	<div id='instructions'>
+		<div id='instruction0' class='instructions'>
+			<img src='./images/speakericon.jpeg' id='speakerIcon'/>
+			<div id='body'>make sure your volume is turned up</div>
+		</div>
+		<div id='instruction1' class='instructions'>
+			<div id='instructionArrow'>&#8592;</div>
+			<div id='body'>tap the arrow buttons to navigate to the next palegic zone</div>
+		</div>
+		<div id='instruction2' class='instructions'>
+			<div id='instructionArrow'>&#8593;&#8595;</div>
+			<div id='body'>or tap the UP and DOWN arrows on your keyboard</div>
+		</div>
+		<div id='instruction3' class='instructions'>
+			<div id='body'>listen. explore. enjoy.</div>
+		</div>
+		<div id='buttonContainer'>
+			<div id='closeButton' class='button'> CLOSE </div> 
+			<div id='nextButton' class='button'> NEXT </div> 
+			<div id='previousButton' class='button'> PREV </div> 
+		</div>
+	</div>
+	<div id="notSupported">
+		<div id='title'>
+			SORRY
+		</div>
+		<div id='explaination'>
+			We're sorry, but you're browser does not support the technologies that we use in this project. Please try a browser that has both HTML5 Canvas and Web Audio such as the latest <a href='http://www.google.com/chrome/'>Google Chrome</a> or <a href='http://www.apple.com/safari/'>Safari</a>.
+		</div>
+	</div>
 	<div id="loadingScreen">
 		<div id='title'>
 			SUBMERSIBLE
+		</div>
+		<div id='explaination'>
+			You are at a helm of a submarine navigating the depths of the ocean. At each strata, you see and hear different organisms. In the sunny epipelagic zone, watch the fast and massive tuna swim by in schools. Or catch a glimpse of the rare sea pig in the darkness of the abyssopelagic. Each of these organisms contributes a spatialized motif to the evolving soundscape.
 		</div>
 		<div id="loadingBar">
 			<div id="loadedArea"></div>

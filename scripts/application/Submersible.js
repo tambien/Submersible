@@ -7,47 +7,67 @@ $(function() {
  *
  * the main application
  */
-var SUBMERSIBLE = function() {
+ var SUBMERSIBLE = function() {
 
-	var $container;
+ 	var $container;
 
 	//var audioContext = new webkit;
 
 	//INITIALIZATION///////////////////////////////////////////////////////////
 
 	function initialize() {
-		$container = $("#container");
-		//make the model
-		SUBMERSIBLE.model = new SUBMERSIBLE.Model();
-		//setup the audio context
-		makeAudioContext();
-		//make the background sounds player
-		SUBMERSIBLE.zoneSounds = new SUBMERSIBLE.ZoneSounds({
-			model : SUBMERSIBLE.model,
-		})
-		//the metronome
-		/*
-		SUBMERSIBLE.metronome = new SUBMERSIBLE.Metronome({
-		bpm : 96,
-		});
+		//first test that it'll work in this browser
+		if (testCanvasAndAudio()){
+			//cache the container
+			$container = $("#container");
+			//make the model
+			SUBMERSIBLE.model = new SUBMERSIBLE.Model();
+			//setup the audio context
+			makeAudioContext();
+			//make the background sounds player
+			SUBMERSIBLE.zoneSounds = new SUBMERSIBLE.ZoneSounds({
+				model : SUBMERSIBLE.model,
+			})
+			//the metronome
+			/*
+			SUBMERSIBLE.metronome = new SUBMERSIBLE.Metronome({
+			bpm : 96,
+			});
 		*/
-		//make the controls
-		SUBMERSIBLE.controls = new SUBMERSIBLE.Controls({
-			model : SUBMERSIBLE.model,
-		})
-		//the loading screen
-		SUBMERSIBLE.loadingScreen = new SUBMERSIBLE.LoadingScreen({
-			model : SUBMERSIBLE.model,
-		})
-		//load the sounds
-		startLoadingSounds();
-		//setup the rendering context
-		setupTHREE();
-		setupStats();
-		//bind the basic events
-		bindEvents();
-		//load all of the fish images
-		loadFishImages();
+			//make the controls
+			SUBMERSIBLE.controls = new SUBMERSIBLE.Controls({
+				model : SUBMERSIBLE.model,
+			})
+			//the loading screen
+			SUBMERSIBLE.loadingScreen = new SUBMERSIBLE.LoadingScreen({
+				model : SUBMERSIBLE.model,
+			})
+			//load the sounds
+			startLoadingSounds();
+			//setup the rendering context
+			setupTHREE();
+			setupStats();
+			//bind the basic events
+			bindEvents();
+			//load all of the fish images
+			loadFishImages();
+			//make the instructions
+			SUBMERSIBLE.instructions = new SUBMERSIBLE.Instructions({
+				model : SUBMERSIBLE.model,
+			})
+		}
+	}
+
+	function testCanvasAndAudio(){
+		if (!Modernizr.webaudio || !Modernizr.canvas){
+		//if (true){
+			$("#notSupported").css({
+				"z-index" : 100000,
+			}).fadeTo(600, 1);
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	//AUDIO CONTEXT////////////////////////////////////////////////////////////
@@ -83,11 +103,7 @@ var SUBMERSIBLE = function() {
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
 		//the renderer
-		if(Detector.canvas) {
-			renderer = new THREE.CanvasRenderer();
-		} else {
-			alert("sorry, get a new browser");
-		}
+		renderer = new THREE.CanvasRenderer();
 		$container.append(renderer.domElement);
 		//initialize the size
 		sizeTHREE();
@@ -374,8 +390,8 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 /*
  * THE SOUNDS THAT EACH ZONE MAKES
  */
-SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
-	initialize : function() {
+ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
+ 	initialize : function() {
 		//the background sounds of the zones
 		this.buffers = [];
 		this.listenTo(this.model, "change:zone", this.changeZoneSound);
@@ -450,16 +466,16 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 /*
  * THE SUBMARINE CONTROLS
  */
-SUBMERSIBLE.Controls = Backbone.View.extend({
+ SUBMERSIBLE.Controls = Backbone.View.extend({
 
-	events : {
-		"click #upArrowTouch" : "goUp",
-		"click #downArrowTouch" : "goDown",
-	},
+ 	events : {
+ 		"click #upArrowTouch" : "goUp",
+ 		"click #downArrowTouch" : "goDown",
+ 	},
 
-	initialize : function() {
-		this.setElement($("#cockpit"));
-		this.listenTo(this.model, "change:started", this.startControls);
+ 	initialize : function() {
+ 		this.setElement($("#cockpit"));
+ 		this.listenTo(this.model, "change:started", this.startControls);
 		//make the canvas/context
 		this.$canvas = this.$el.find("#zoneIndicatorBulb");
 		this.context = this.$canvas[0].getContext("2d");
@@ -594,17 +610,17 @@ SUBMERSIBLE.Controls = Backbone.View.extend({
 /*
  * THE SUBMARINE CONTROLS
  */
-SUBMERSIBLE.LoadingScreen = Backbone.View.extend({
-	events : {
-		"click #startButton" : 'startClicked',
-	},
-	initialize : function() {
-		this.listenTo(this.model, "change:loadedAssets", this.updateProgress);
-		this.setElement($("#loadingScreen"));
-		this.$loadingProgress = this.$el.find("#loadedArea");
-	},
-	updateProgress : function(model, loadedAssets) {
-		var loadTotal = SUBMERSIBLE.Fishes.length * 2 + 5;
+ SUBMERSIBLE.LoadingScreen = Backbone.View.extend({
+ 	events : {
+ 		"click #startButton" : 'startClicked',
+ 	},
+ 	initialize : function() {
+ 		this.listenTo(this.model, "change:loadedAssets", this.updateProgress);
+ 		this.setElement($("#loadingScreen"));
+ 		this.$loadingProgress = this.$el.find("#loadedArea");
+ 	},
+ 	updateProgress : function(model, loadedAssets) {
+ 		var loadTotal = SUBMERSIBLE.Fishes.length * 2 + 5;
 		//move the bar
 		var percentage = Math.round((loadedAssets / loadTotal) * 100);
 		percentage += "%";
@@ -633,6 +649,68 @@ SUBMERSIBLE.LoadingScreen = Backbone.View.extend({
 		//start the model
 		this.model.set("started", true);
 	})
+});
+
+/*
+ * THE INSTRUCTIONS
+ */
+ SUBMERSIBLE.Instructions = Backbone.View.extend({
+ 	events : {
+ 		"click #previousButton" : 'decrement',
+ 		"click #nextButton" : 'increment',
+ 		"click #closeButton" : 'close',
+ 	},
+ 	initialize : function() {
+ 		this.setElement($("#instructions"));
+ 		this.instructionNumber = 0;
+ 		this.render();
+ 		//fade in the instructions on start
+ 		this.listenToOnce(this.model, "change:started", this.fadeIn);
+ 		this.instructionMax = 3;
+ 	},
+ 	render : function(){
+ 		var instructionString = "#instruction"+this.instructionNumber;
+ 		//fade away all the instructions
+ 		this.$el.find(".instructions").fadeTo(500, 0);
+ 		//fade in the current instruction
+ 		this.$el.find(instructionString).stop().fadeTo(500, 1);
+ 		if (this.instructionNumber === 0){
+ 			//disable the prev button
+ 			this.$el.find("#previousButton").addClass("buttonDisabled");
+ 		} else {
+			this.$el.find("#previousButton").removeClass("buttonDisabled");
+ 		}
+ 		if (this.instructionNumber === this.instructionMax){
+ 			//disable the next button
+ 			this.$el.find("#nextButton").addClass("buttonDisabled");
+ 		} else {
+			this.$el.find("#nextButton").removeClass("buttonDisabled");
+ 		}
+ 	},
+ 	fadeIn : function(){
+ 		setTimeout(function(self){
+ 			self.$el.fadeTo(500, .8);
+ 		}, 1000, this);
+ 	},
+	close : function() {
+		this.$el.fadeTo(500, 0, function(){
+			$(this).css({
+				"z-index" : -10000,
+			})
+		});
+	}, 
+	increment : function(){
+		if (this.instructionNumber < this.instructionMax){
+			this.instructionNumber++;
+			this.render();
+		}
+	}, 
+	decrement : function(){
+		if (this.instructionNumber > 0){
+			this.instructionNumber--;
+			this.render();
+		}
+	}, 
 });
 
 //development version
