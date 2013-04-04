@@ -177,7 +177,7 @@ INSTRUCTIONS
 }
 #loadingScreen #title {
 	width: 100%;
-	margin-top: 110px;
+	margin-top: 260px;
 	font-size: 72px;
 	font-family: 'Sintony', sans-serif;
 	color: white;
@@ -186,15 +186,15 @@ INSTRUCTIONS
 #loadingScreen #iconHeader {
 	position: absolute;
 	margin-top: 5px;
-	width: 100px;
-	height: 100px;
+	width: 250px;
+	height: 250px;
 	left: 50%;
-	margin-left: -50px;
+	margin-left: -125px;
 }
 #loadingScreen #explaination {
 	width: 600px;
 	position: absolute;
-	top: 240px;
+	top: 370px;
 	left: 50%;
 	margin-left: -300px;
 	font-size: 18px;
@@ -210,7 +210,7 @@ INSTRUCTIONS
 	width: 500px;
 	height: 50px;
 	position: absolute;
-	top: 560px;
+	top: 680px;
 	left: 50%;
 	margin-left: -250px;
 	margin-top: -25px;
