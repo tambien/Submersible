@@ -178,15 +178,15 @@ INSTRUCTIONS
 }
 #loadingScreen #title {
 	width: 100%;
-	margin-top: 260px;
-	font-size: 72px;
+	margin-top: 290px;
+	font-size: 60px;
 	font-family: 'Sintony', sans-serif;
 	color: white;
 	text-align: center;
 }
 #loadingScreen #iconHeader {
 	position: absolute;
-	margin-top: 5px;
+	margin-top: 25px;
 	width: 250px;
 	height: 250px;
 	left: 50%;
@@ -195,10 +195,10 @@ INSTRUCTIONS
 #loadingScreen #explaination {
 	width: 650px;
 	position: absolute;
-	top: 370px;
+	top: 390px;
 	left: 50%;
 	margin-left: -325px;
-	font-size: 18px;
+	font-size: 16px;
 	font-family: 'Sintony', sans-serif;
 	color: white;
 	text-align: left;
@@ -209,16 +209,16 @@ INSTRUCTIONS
 }
 #loadingScreen #loadingBar {
 	width: 500px;
-	height: 50px;
+	height: 10px;
 	position: absolute;
-	top: 670px;
+	top: 640px;
 	left: 50%;
 	margin-left: -250px;
 	margin-top: -25px;
 	border: #ffffff solid 1px;
-	-moz-border-radius: 5px; /* Firefox */
-	-webkit-border-radius: 5px; /* Safari, Chrome */
-	border-radius: 5px; /* CSS3 */
+	-moz-border-radius: 2px; /* Firefox */
+	-webkit-border-radius: 2px; /* Safari, Chrome */
+	border-radius: 2px; /* CSS3 */
 	overflow: hidden;
 }
 #loadingScreen #loadedArea {
@@ -227,10 +227,10 @@ INSTRUCTIONS
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	background-color: blue;
-	-moz-border-radius: 5px; /* Firefox */
-	-webkit-border-radius: 5px; /* Safari, Chrome */
-	border-radius: 5px; /* CSS3 */
+	background-color: white;
+	-moz-border-radius: 1px; /* Firefox */
+	-webkit-border-radius: 1px; /* Safari, Chrome */
+	border-radius: 1px; /* CSS3 */
 }
 #loadingScreen #startButton {
 	position: absolute;
@@ -238,10 +238,10 @@ INSTRUCTIONS
 	left: 0px;
 	width: 100%;
 	height: 100%;
-	padding-top: 10px;
+	padding-top: 4px;
 	font-size: 24px;
 	font-family: 'Sintony', sans-serif;
-	color: white;
+	color: black;
 	text-align: center;
 	cursor: pointer;
 }

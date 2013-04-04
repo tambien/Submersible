@@ -635,7 +635,14 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 		//when everything is loaded, make the collection
 		SUBMERSIBLE.fishCollection = new SUBMERSIBLE.FishCollection();
 		//turn the loading bar into a button
-		this.$loadingProgress.html("<div id='startButton'>START</div>");
+		var self = this;
+		this.$el.find("#loadingBar").transition({
+			width : "120px", 
+			"margin-left" : '-60px',
+			height: "40px",
+		}, 500, function(){
+			self.$loadingProgress.html("<div id='startButton'>START</div>");
+		});
 	},
 	startClicked : _.once(function() {
 		//fade the loading screen out
