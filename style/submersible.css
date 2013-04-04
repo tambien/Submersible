@@ -209,7 +209,7 @@ INSTRUCTIONS
 }
 #loadingScreen #loadingBar {
 	width: 500px;
-	height: 10px;
+	height: 8px;
 	position: absolute;
 	top: 640px;
 	left: 50%;
@@ -241,7 +241,7 @@ INSTRUCTIONS
 	padding-top: 4px;
 	font-size: 24px;
 	font-family: 'Sintony', sans-serif;
-	color: black;
+	color: #180E59;
 	text-align: center;
 	cursor: pointer;
 }
