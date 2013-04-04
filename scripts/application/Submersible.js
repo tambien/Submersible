@@ -421,6 +421,7 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 	},
 	queueStart : function(model, started) {
 		if(started) {
+			console.log("started");
 			//queue the start in time
 			MSG.route("/metro/1n", this.playSounds.bind(this));
 			this.makeGains();

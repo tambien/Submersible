@@ -193,11 +193,11 @@ INSTRUCTIONS
 	margin-left: -125px;
 }
 #loadingScreen #explaination {
-	width: 650px;
+	width: 680px;
 	position: absolute;
 	top: 390px;
 	left: 50%;
-	margin-left: -325px;
+	margin-left: -340px;
 	font-size: 16px;
 	font-family: 'Sintony', sans-serif;
 	color: white;
@@ -207,11 +207,14 @@ INSTRUCTIONS
 	color: #180E59;
 	text-decoration: none;
 }
+#loadingScreen a:hover {
+	color: white;
+}
 #loadingScreen #loadingBar {
 	width: 500px;
 	height: 8px;
 	position: absolute;
-	top: 640px;
+	top: 630px;
 	left: 50%;
 	margin-left: -250px;
 	margin-top: -25px;
