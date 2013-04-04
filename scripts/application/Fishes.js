@@ -55,12 +55,12 @@ SUBMERSIBLE.Fishes = [
 	attributes : {
 		//specs
 		size : 600,
-		speed : 12,
+		speed : 13,
 		subdivision : "16n",
 		//images
-		image : "Z1-Tuna.png",
-		gifCount : 1,
-		gifDuration : 650,
+		image : "Z1-Tuna-sequence.png",
+		gifCount : 4,
+		gifDuration : 230,
 		//the palegic zone 0 - 3
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
@@ -76,9 +76,9 @@ SUBMERSIBLE.Fishes = [
 		speed : 4.2,
 		subdivision : "4n",
 		//images
-		image : "Z1-Wolffish.png",
-		gifCount : 1,
-		gifDuration : 650,
+		image : "Z1-WolfFish-sequence.png",
+		gifCount : 4,
+		gifDuration : 400,
 		//the palegic zone 0 - 3
 		palegicZone : [0, 0],
 		//the audio file of the fish sound

@@ -289,7 +289,7 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 	},
 	updateOpacity : function() {
 		var position = this.model.get("position");
-		var opacity = INTERPOLATE.linear(position.z, -6000, -2500, 0, 1, true);
+		var opacity = INTERPOLATE.linear(position.z, -6000, -500, 0, 1, true);
 		this.sprite.material.opacity = opacity// * opacity;
 	},
 	moveGif : function(timestep) {

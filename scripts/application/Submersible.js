@@ -247,25 +247,33 @@ $(function() {
 	var introLoadingGain;
 
 	//loading water and submarine sounds
+	//stupid hack cause safari doesn't support the loopStart/loopEnd yet. 
 	function loadLoadingWater(callback) {
 		introLoadingGain = SUBMERSIBLE.context.createGainNode();
-		loadURL("splash.mp3", function(buffer) {
-			//star the sound
-			var now = SUBMERSIBLE.context.currentTime;
-			var source = SUBMERSIBLE.context.createBufferSource();
-			source.buffer = buffer;
-			source.loop = true;
-			source.loopStart = 6.2;
-			source.loopEnd = buffer.duration;
-			source.connect(introLoadingGain);
-			source.noteOn(0);
-			//fade it in
-			var currentGain = introLoadingGain.gain.value;
-			introLoadingGain.gain.cancelScheduledValues(now);
-			introLoadingGain.gain.setValueAtTime(currentGain, now);
-			introLoadingGain.gain.linearRampToValueAtTime(1, now + 3);
-			introLoadingGain.connect(SUBMERSIBLE.output);
-			callback();
+		loadURL("justSplash.mp3", function(splashBuffer) {
+			loadURL("justOcean.mp3", function(oceanBuffer) {
+				//star the sound
+				var now = SUBMERSIBLE.context.currentTime;
+				//first the splash
+				var splashSource = SUBMERSIBLE.context.createBufferSource();
+				splashSource.connect(SUBMERSIBLE.output);
+				splashSource.buffer = splashBuffer;
+				splashSource.loop = false;
+				splashSource.noteOn(now);
+				//then the ocean
+				var oceanSource = SUBMERSIBLE.context.createBufferSource();
+				oceanSource.connect(introLoadingGain);
+				oceanSource.buffer = oceanBuffer;
+				oceanSource.loop = true;
+				oceanSource.noteOn(now + 1.25);
+				//fade it in
+				var currentGain = introLoadingGain.gain.value;
+				introLoadingGain.gain.cancelScheduledValues(now);
+				introLoadingGain.gain.setValueAtTime(currentGain, now + 1.25);
+				introLoadingGain.gain.linearRampToValueAtTime(1, now + splashBuffer.duration);
+				introLoadingGain.connect(SUBMERSIBLE.output);
+				callback();
+			})
 		})
 	}
 
@@ -421,20 +429,24 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 	},
 	queueStart : function(model, started) {
 		if(started) {
-			console.log("started");
 			//queue the start in time
 			MSG.route("/metro/1n", this.playSounds.bind(this));
 			this.makeGains();
 			//set the gain of the current zone;
 			this.changeZoneSound(this.model, this.model.get("zone"));
 			//start the metro
-			METRO.start({
-				bpm : 96,
-				subdivision : ["1n", "2n", "4n", "4t", "8n", "16n"]
-			});
+			//defer from the main thread.
+			//trying to fix safari no start bug
+			setTimeout(function(){
+				METRO.start({
+					bpm : 96,
+					subdivision : ["1n", "2n", "4n", "4t", "8n", "16n"]
+				});
+			}, 0)
 		}
 	},
 	playSounds : function(msg) {
+		console.log(msg.data);
 		//start the metronome
 		var context = SUBMERSIBLE.context;
 		if(msg.data % 8 === 0) {
