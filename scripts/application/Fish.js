@@ -59,8 +59,10 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 	initialize : function(attributes, options) {
 		//swim function options
 		if(options && options.swim) {
-			this.swim = options.swim;
+			//this.swim = options.swim;
 		}
+		//scale up the size
+		this.set("size", attributes.size * 1.2);
 		//set the position and direction
 		//this.putOnScreen();
 		//start hte timer

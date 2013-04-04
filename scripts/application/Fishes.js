@@ -5,7 +5,7 @@ SUBMERSIBLE.Fishes = [
 /*
  * ZONE 0
  */
-{
+/*{
 	name : "sadFish",
 	//after how many seconds does one appear (on average)?
 	count : 10,
@@ -25,32 +25,33 @@ SUBMERSIBLE.Fishes = [
 		sound : "sadFish4.mp3",
 		beatRepeat : 8,
 	},
-}, {
-	name : "shark",
-	count : 5,
+}, 
+*/{
+	name : "greatWhite",
+	count : 1,
 	attributes : {
 		//specs
-		size : 600,
+		size : 900,
 		mass : 100,
 		speed : 5,
 		subdivision : "4n",
 		//images
-		image : "crayon-shark-sequence.png",
-		gifCount : 6,
-		gifDuration : 650,
+		image : "Z1-GreatWhite-sequence.png",
+		gifCount : 4,
+		gifDuration : 800,
 		//the palegic zone 0 - 3
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
-		sound : "shark3.mp3",
+		sound : "greatWhite.mp3",
 		beatRepeat : 8,
-		volume : 1.2,
+		//volume : 1.2,
 	},
 }, {
 	name : "tuna",
-	count : 8,
+	count : 3,
 	attributes : {
 		//specs
-		size : 450,
+		size : 600,
 		speed : 12,
 		subdivision : "16n",
 		//images
@@ -60,16 +61,16 @@ SUBMERSIBLE.Fishes = [
 		//the palegic zone 0 - 3
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
-		sound : "tuna.mp3",
+		sound : "tuna3.mp3",
 		beatRepeat : 8,
 	},
 }, {
 	name : "wolfish",
-	count : 4,
+	count : 3,
 	attributes : {
 		//specs
-		size : 280,
-		speed : 5,
+		size : 340,
+		speed : 4.2,
 		subdivision : "4n",
 		//images
 		image : "Z1-Wolffish.png",
@@ -78,20 +79,20 @@ SUBMERSIBLE.Fishes = [
 		//the palegic zone 0 - 3
 		palegicZone : [0, 0],
 		//the audio file of the fish sound
-		sound : "wolffish.mp3",
+		sound : "wolffish2.mp3",
 		beatRepeat : 4,
 	},
 },
 {
 	name : "dolphin",
 	//after how many seconds does one appear (on average)?
-	count : 7,
+	count : 4,
 	attributes : {
 		//specs
-		size : 350,
+		size : 450,
 		mass : 20,
 		speed : 6,
-		subdivision : "8n",
+		subdivision : "4n",
 		//images
 		image : "Z1-Dolphin.png",
 		gifCount : 1,
@@ -99,9 +100,9 @@ SUBMERSIBLE.Fishes = [
 		//the palegic zone 0 - 3
 		palegicZone : [0, 0],
 		//the audio file of the fish sound
-		sound : "dolphin.mp3",
-		beatRepeat : 6,
-		volume : .8,
+		sound : "dolphin2.mp3",
+		beatRepeat : 8,
+		//volume : .8,
 	},
 },
 /*
@@ -109,26 +110,26 @@ SUBMERSIBLE.Fishes = [
  */
 {
 	name : "cuddly",
-	count : 4,
+	count : 3,
 	attributes : {
 		//specs
-		size : 150,
+		size : 250,
 		speed : 4.5,
 		subdivision : "8n",
 		//images
-		image : "Z2-Cuttlefish.png",
-		gifCount : 1,
-		gifDuration : 650,
+		image : "Z2-Cuttlefish-sequence.png",
+		gifCount : 4,
+		gifDuration : 250,
 		//the palegic zone 0 - 3
-		palegicZone : [0, 1],
+		palegicZone : [1, 1],
 		//the audio file of the fish sound
-		sound : "cuddlefish.mp3",
+		sound : "cuttlefish2.mp3",
 		beatRepeat : 8,
 	},
 },
 {
 	name : "squid",
-	count : 30,
+	count : 7,
 	attributes : {
 		//specs
 		size : 100,
@@ -141,9 +142,9 @@ SUBMERSIBLE.Fishes = [
 		//the palegic zone 0 - 3
 		palegicZone : [1, 2],
 		//the audio file of the fish sound
-		sound : "squid.mp3",
+		sound : "squid2.mp3",
 		beatRepeat : 4,
-		volume : .5,
+		//volume : .5,
 	},
 },
 {
@@ -151,19 +152,40 @@ SUBMERSIBLE.Fishes = [
 	count : 4,
 	attributes : {
 		//specs
-		size : 450,
-		speed : 8,
+		size : 550,
+		speed : 14,
 		subdivision : "4n",
 		//images
-		image : "Z2-Swordfish.png",
-		gifCount : 1,
-		gifDuration : 650,
+		image : "Z2-Swordfish-Sequence.png",
+		gifCount : 4,
+		gifDuration : 200,
 		//the palegic zone 0 - 3
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
-		sound : "swordfish.mp3",
+		sound : "swordfish3.mp3",
 		beatRepeat : 6,
-		volume : .6,
+		//volume : .6,
+	},
+},
+{
+	name : "jelly",
+	count : 3,
+	attributes : {
+		//specs
+		size : 450,
+		mass : 10,
+		speed : 2,
+		subdivision : "4t",
+		//images
+		image : "ink-jelly-sequence.png",
+		gifCount : 6,
+		gifDuration : 330,
+		foreground : false,
+		//the palegic zone 0 - 3
+		palegicZone : [1, 2],
+		//the audio file of the fish sound
+		sound : "jelly3.mp3",
+		beatRepeat : 6,
 	},
 },
 /*
@@ -184,30 +206,29 @@ SUBMERSIBLE.Fishes = [
 		//the palegic zone 0 - 3
 		palegicZone : [2, 2],
 		//the audio file of the fish sound
-		sound : "eel.mp3",
+		sound : "eel2.mp3",
 		beatRepeat : 4,
-		volume : .5,
+		//volume : .5,
 	},
 },
 {
-	name : "jelly",
+	name : "angler",
 	count : 3,
 	attributes : {
 		//specs
-		size : 450,
-		mass : 10,
-		speed : 2,
-		subdivision : "4t",
+		size : 350,
+		speed : 5,
+		subdivision : "4n",
 		//images
-		image : "ink-jelly-sequence.png",
-		gifCount : 6,
-		gifDuration : 530,
-		foreground : false,
+		image : "Z3-Angler-sequence.png",
+		gifCount : 4,
+		gifDuration : 450,
 		//the palegic zone 0 - 3
-		palegicZone : [1, 3],
+		palegicZone : [2, 2],
 		//the audio file of the fish sound
-		sound : "jelly2.mp3",
-		beatRepeat : 6,
+		sound : "angler2.mp3",
+		beatRepeat : 8,
+		//volume : .5,
 	},
 },
 /*
@@ -232,7 +253,7 @@ SUBMERSIBLE.Fishes = [
 		//the audio file of the fish sound
 		sound : "orb2.mp3",
 		beatRepeat : 8,
-		volume : .6,
+		//volume : .6,
 	},
 },
 {
@@ -253,12 +274,12 @@ SUBMERSIBLE.Fishes = [
 		palegicZone : [3, 3],
 		sound : "seapig.mp3",
 		beatRepeat : 4,
-		volume : .5,
+		//volume : .4,
 	},
 },
 {
 	name : "viperfish",
-	count : 4,
+	count : 0,
 	attributes : {
 		//specs
 		size : 250,
@@ -282,10 +303,10 @@ SUBMERSIBLE.Fishes = [
  */
 {
 	name : "zone0Bubble",
-	count : 40,
+	count : 30,
 	attributes : {
 		//specs
-		size : 100,
+		size : 80,
 		speed : 0,
 		subdivision : "16n",
 		beatRepeat : 15,
@@ -312,10 +333,10 @@ SUBMERSIBLE.Fishes = [
 	 */
 }, {
 	name : "zone1Bubble",
-	count : 40,
+	count : 30,
 	attributes : {
 		//specs
-		size : 100,
+		size : 80,
 		speed : 0,
 		subdivision : "16n",
 		beatRepeat : 15,
@@ -333,10 +354,10 @@ SUBMERSIBLE.Fishes = [
 	},
 }, {
 	name : "zone2Bubble",
-	count : 40,
+	count : 30,
 	attributes : {
 		//specs
-		size : 100,
+		size : 80,
 		speed : 0,
 		subdivision : "16n",
 		beatRepeat : 15,
@@ -354,10 +375,10 @@ SUBMERSIBLE.Fishes = [
 	},
 }, {
 	name : "zone3Bubble",
-	count : 40,
+	count : 30,
 	attributes : {
 		//specs
-		size : 100,
+		size : 80,
 		speed : 0,
 		subdivision : "16n",
 		beatRepeat : 15,

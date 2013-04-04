@@ -61,9 +61,9 @@ var SUBMERSIBLE = function() {
 		//a special output just for fish
 		SUBMERSIBLE.fishOutput = audioContext.createGainNode();
 		SUBMERSIBLE.fishOutput.gain.value = 1;
-		//more like a limiter than compressor
+		//the compressor
 		SUBMERSIBLE.fishCompressor = audioContext.createDynamicsCompressor();
-		SUBMERSIBLE.fishCompressor.threshold.value = -40;
+		SUBMERSIBLE.fishCompressor.threshold.value = -30;
 		SUBMERSIBLE.fishCompressor.ratio.value = 8;
 		//connect it up
 		SUBMERSIBLE.fishOutput.connect(SUBMERSIBLE.fishCompressor);
@@ -115,7 +115,7 @@ var SUBMERSIBLE = function() {
 
 	function offscreenTest(model) {
 		var object = model.view.sprite;
-		var size = model.get('size');
+		var size = model.get('size') / 2;
 		var zDist = SUBMERSIBLE.camera.position.z - object.position.z;
 		var yDist = SUBMERSIBLE.camera.position.y - object.position.y;
 		if(zDist < 0) {
@@ -126,7 +126,7 @@ var SUBMERSIBLE = function() {
 		var aspect = SUBMERSIBLE.camera.aspect;
 		var hFOV = 2 * Math.atan(Math.tan(vFOV / 2) * aspect);
 		var visibleWidth = 2 * Math.tan((hFOV / 2 )) * zDist;
-		return (Math.abs(object.position.x) > visibleWidth / 2 || Math.abs(yDist) > visibleHeight / 2);
+		return (Math.abs(object.position.x) > (visibleWidth / 2  + size)|| Math.abs(yDist) > (visibleHeight / 2 + size));
 	}
 
 	//EVENTS/////////////////////////////////////////////////////////////////////
@@ -233,12 +233,14 @@ var SUBMERSIBLE = function() {
 	//loading water and submarine sounds
 	function loadLoadingWater(callback) {
 		introLoadingGain = SUBMERSIBLE.context.createGainNode();
-		loadURL("loadingWater.mp3", function(buffer) {
+		loadURL("splash.mp3", function(buffer) {
 			//star the sound
 			var now = SUBMERSIBLE.context.currentTime;
 			var source = SUBMERSIBLE.context.createBufferSource();
 			source.buffer = buffer;
 			source.loop = true;
+			source.loopStart = 6.2;
+			source.loopEnd = buffer.duration;
 			source.connect(introLoadingGain);
 			source.noteOn(0);
 			//fade it in
@@ -389,7 +391,7 @@ SUBMERSIBLE.ZoneSounds = Backbone.View.extend({
 		gain.gain.cancelScheduledValues(now);
 		gain.gain.setValueAtTime(currentGain, now);
 		//gain.gain.linearRampToValueAtTime(.4, now + rampTime);
-		gain.gain.linearRampToValueAtTime(.3, now + rampTime);
+		gain.gain.linearRampToValueAtTime(.5, now + rampTime);
 		//fade out the previous gain
 		var previousZone = this.model.previous("zone");
 		var previousGain = this.gains[previousZone];
