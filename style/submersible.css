@@ -174,6 +174,7 @@ INSTRUCTIONS
 	background: -o-linear-gradient(top,  #4ba2d1 0%,#2989d8 75%,#252fc4); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #4ba2d1 0%,#2989d8 75%,#252fc4); /* IE10+ */
 	background: linear-gradient(to bottom, #4ba2d1 0%,#2989d8 75%,#252fc4); /* W3C */
+	overflow: scroll;
 }
 #loadingScreen #title {
 	width: 100%;
@@ -192,11 +193,11 @@ INSTRUCTIONS
 	margin-left: -125px;
 }
 #loadingScreen #explaination {
-	width: 600px;
+	width: 650px;
 	position: absolute;
 	top: 370px;
 	left: 50%;
-	margin-left: -300px;
+	margin-left: -325px;
 	font-size: 18px;
 	font-family: 'Sintony', sans-serif;
 	color: white;
@@ -210,7 +211,7 @@ INSTRUCTIONS
 	width: 500px;
 	height: 50px;
 	position: absolute;
-	top: 680px;
+	top: 670px;
 	left: 50%;
 	margin-left: -250px;
 	margin-top: -25px;
