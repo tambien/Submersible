@@ -761,4 +761,4 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 });
 
 //development version
-SUBMERSIBLE.dev = true;
+SUBMERSIBLE.dev = false;
