@@ -262,15 +262,16 @@ SUBMERSIBLE.Fish.View = Backbone.View.extend({
 			var imageWidth = model.get("imageWidth") / gifCount;
 			var imagePosition = gifOffset * imageWidth;
 
-			context.save();
-
-			var direction = model.get("direction");
-			if(direction.x > 0) {
-				context.translate(0.5, 0.5);
-				context.scale(1, -1);
+			if (imageWidth > 0){
+				context.save();
+				var direction = model.get("direction");
+				if(direction.x > 0) {
+					context.translate(0.5, 0.5);
+					context.scale(1, -1);
+				}
+				context.drawImage(model.get("image"), imagePosition, 0, imageWidth, model.get("imageHeight"), 0, 0, 1, 1);
+				context.restore();
 			}
-			context.drawImage(model.get("image"), imagePosition, 0, imageWidth, model.get("imageHeight"), 0, 0, 1, 1);
-			context.restore();
 		}
 	},
 	positionFish : function(model) {
@@ -383,11 +384,14 @@ SUBMERSIBLE.Fish.Sound = Backbone.View.extend({
 			//and the source node
 			var source = SUBMERSIBLE.context.createBufferSource();
 			//set hte buffer
-			source.buffer = this.model.get("sound");
-			source.loop = false;
-			//connect it to the lowpass
-			source.connect(this.lowpass);
-			source.noteOn(timetag);
+			var buffer = this.model.get("sound");
+			if (buffer.duration > 0){
+				source.buffer = buffer;
+				source.loop = false;
+				//connect it to the lowpass
+				source.connect(this.lowpass);
+				source.noteOn(timetag);
+			}
 		}
 	},
 	update : function(scalar) {

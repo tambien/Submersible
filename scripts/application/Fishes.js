@@ -202,7 +202,7 @@ SUBMERSIBLE.Fishes = [
 	attributes : {
 		//specs
 		size : 150,
-		speed : 6,
+		speed : 4,
 		subdivision : "2n",
 		//images
 		image : "Z3-Eel-sequence.png",
@@ -313,7 +313,7 @@ SUBMERSIBLE.Fishes = [
 		speed : 2,
 		subdivision : "2n",
 		//images
-		image : "Z4-Orb2.png",
+		image : "Z4-Orb3.png",
 		gifCount : 1,
 		gifDuration : 530,
 		foreground : false,
@@ -327,7 +327,7 @@ SUBMERSIBLE.Fishes = [
 },
 {
 	name : "seaPig",
-	count : 3,
+	count : 1,
 	attributes : {
 		//specs
 		size : 90,
