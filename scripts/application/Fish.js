@@ -103,7 +103,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 			if(this.get("foreground")) {
 				//either coming from the right or left side
 				//pick a random z
-				var zPos = RANDOM.getInt(-3000, -2000);
+				var zPos = RANDOM.getInt(-3500, -2500);
 				position.z = zPos;
 				var halfWidth = this.getScreenWidthFromZ(zPos) + this.get("size")*2;
 
@@ -114,7 +114,7 @@ SUBMERSIBLE.Fish = Backbone.Model.extend({
 					position.x = halfWidth;
 					direction.setX(-1);
 				}
-				direction.setZ(RANDOM.getFloat(-.2, .2));
+				direction.setZ(RANDOM.getFloat(-.1, .1));
 			} else {
 				position.z = -6001;
 				var halfWidth = this.getScreenWidthFromZ(position.z) / 4;

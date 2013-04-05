@@ -41,11 +41,12 @@ SUBMERSIBLE.Fishes = [
 		//images
 		image : "Z1-GreatWhite-sequence.png",
 		gifCount : 4,
-		gifDuration : 800,
+		gifDuration : 650,
+		foreground : false,
 		//the palegic zone 0 - 3
 		palegicZone : [0, 1],
 		//the audio file of the fish sound
-		sound : "greatWhite.mp3",
+		sound : "shark4.mp3",
 		beatRepeat : 8,
 		//volume : 1.2,
 	},
@@ -97,9 +98,9 @@ SUBMERSIBLE.Fishes = [
 		speed : 6,
 		subdivision : "4n",
 		//images
-		image : "Z1-Dolphin.png",
-		gifCount : 1,
-		gifDuration : 300,
+		image : "Z1-Dolphin-Sequence.png",
+		gifCount : 4,
+		gifDuration : 200,
 		//the palegic zone 0 - 3
 		palegicZone : [0, 0],
 		//the audio file of the fish sound
@@ -139,9 +140,9 @@ SUBMERSIBLE.Fishes = [
 		speed : 4,
 		subdivision : "2n",
 		//images
-		image : "Z2-Squid.png",
-		gifCount : 1,
-		gifDuration : 650,
+		image : "Z2-Squid-sequence.png",
+		gifCount : 4,
+		gifDuration : 250,
 		//the palegic zone 0 - 3
 		palegicZone : [1, 2],
 		//the audio file of the fish sound
@@ -187,7 +188,7 @@ SUBMERSIBLE.Fishes = [
 		//the palegic zone 0 - 3
 		palegicZone : [1, 2],
 		//the audio file of the fish sound
-		sound : "jelly3.mp3",
+		sound : "jelly4.mp3",
 		beatRepeat : 6,
 	},
 },
@@ -203,13 +204,13 @@ SUBMERSIBLE.Fishes = [
 		speed : 6,
 		subdivision : "2n",
 		//images
-		image : "Z3-Eel.png",
-		gifCount : 1,
-		gifDuration : 650,
+		image : "Z3-Eel-sequence.png",
+		gifCount : 4,
+		gifDuration : 300,
 		//the palegic zone 0 - 3
 		palegicZone : [2, 2],
 		//the audio file of the fish sound
-		sound : "eel2.mp3",
+		sound : "eel3.mp3",
 		beatRepeat : 4,
 		//volume : .5,
 	},
@@ -229,8 +230,28 @@ SUBMERSIBLE.Fishes = [
 		//the palegic zone 0 - 3
 		palegicZone : [2, 2],
 		//the audio file of the fish sound
-		sound : "angler2.mp3",
-		beatRepeat : 8,
+		sound : "angler4.mp3",
+		beatRepeat : 4,
+		//volume : .5,
+	},
+},
+{
+	name : "dumbo",
+	count : 5,
+	attributes : {
+		//specs
+		size : 250,
+		speed : 5.5,
+		subdivision : "4t",
+		//images
+		image : "Z3-DumboOctopus-sequence.png",
+		gifCount : 8,
+		gifDuration : 100,
+		//the palegic zone 0 - 3
+		palegicZone : [2, 2],
+		//the audio file of the fish sound
+		sound : "dumbo2.mp3",
+		beatRepeat : 6,
 		//volume : .5,
 	},
 },
@@ -238,16 +259,60 @@ SUBMERSIBLE.Fishes = [
  * ZONE 3
  */
 {
-	name : "orb",
-	count : 10,
+	name : "orb0",
+	count : 3,
 	attributes : {
 		//specs
 		size : 50,
 		mass : 10,
 		speed : 2,
-		subdivision : "4n",
+		subdivision : "2n",
 		//images
-		image : "Z4-LuminescentOrb.png",
+		image : "Z4-Orb1.png",
+		gifCount : 1,
+		gifDuration : 530,
+		foreground : false,
+		//the palegic zone 0 - 3
+		palegicZone : [3, 3],
+		//the audio file of the fish sound
+		sound : "orb0.mp3",
+		beatRepeat : 4,
+		volume : 1.5,
+	},
+},
+{
+	name : "orb1",
+	count : 3,
+	attributes : {
+		//specs
+		size : 50,
+		mass : 10,
+		speed : 2,
+		subdivision : "2n",
+		//images
+		image : "Z4-Orb2.png",
+		gifCount : 1,
+		gifDuration : 530,
+		foreground : false,
+		//the palegic zone 0 - 3
+		palegicZone : [3, 3],
+		//the audio file of the fish sound
+		sound : "orb1.mp3",
+		beatRepeat : 4,
+		volume : 1.5,
+	},
+},
+{
+	name : "orb2",
+	count : 3,
+	attributes : {
+		//specs
+		size : 50,
+		mass : 10,
+		speed : 2,
+		subdivision : "2n",
+		//images
+		image : "Z4-Orb2.png",
 		gifCount : 1,
 		gifDuration : 530,
 		foreground : false,
@@ -255,8 +320,8 @@ SUBMERSIBLE.Fishes = [
 		palegicZone : [3, 3],
 		//the audio file of the fish sound
 		sound : "orb2.mp3",
-		beatRepeat : 8,
-		//volume : .6,
+		beatRepeat : 4,
+		volume : 1.5,
 	},
 },
 {
@@ -269,36 +334,15 @@ SUBMERSIBLE.Fishes = [
 		speed : 2,
 		subdivision : "4n",
 		//images
-		image : "Z4-SeaPig.png",
-		gifCount : 1,
-		gifDuration : 530,
+		image : "Z4-SeaPig-sequence.png",
+		gifCount : 4,
+		gifDuration : 300,
 		foreground : false,
 		//the palegic zone 0 - 3
 		palegicZone : [3, 3],
-		sound : "seapig.mp3",
-		beatRepeat : 4,
+		sound : "seapig3.mp3",
+		beatRepeat : 5,
 		//volume : .4,
-	},
-},
-{
-	name : "viperfish",
-	count : 0,
-	attributes : {
-		//specs
-		size : 250,
-		mass : 10,
-		speed : 5,
-		subdivision : "4n",
-		//images
-		image : "Z4-Viperfish.png",
-		gifCount : 1,
-		gifDuration : 530,
-		foreground : false,
-		//the palegic zone 0 - 3
-		palegicZone : [2, 3],
-		//the audio file of the fish sound
-		sound : "viperfish2.mp3",
-		beatRepeat : 6,
 	},
 },
 /*
