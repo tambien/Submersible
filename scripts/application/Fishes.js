@@ -190,6 +190,7 @@ SUBMERSIBLE.Fishes = [
 		//the audio file of the fish sound
 		sound : "jelly4.mp3",
 		beatRepeat : 6,
+		volume : .8,
 	},
 },
 /*

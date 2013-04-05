@@ -446,7 +446,6 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 		}
 	},
 	playSounds : function(msg) {
-		console.log(msg.data);
 		//start the metronome
 		var context = SUBMERSIBLE.context;
 		if(msg.data % 8 === 0) {
