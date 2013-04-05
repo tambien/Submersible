@@ -9,7 +9,7 @@ $(function() {
  */
  var SUBMERSIBLE = function() {
 
- 	var $container;
+ 	var $container, $screen;
 
 	//var audioContext = new webkit;
 
@@ -20,6 +20,7 @@ $(function() {
 		if (testCanvasAndAudio()){
 			//cache the container
 			$container = $("#container");
+			$screen = $("#screen");
 			//make the model
 			SUBMERSIBLE.model = new SUBMERSIBLE.Model();
 			//setup the audio context
@@ -98,21 +99,45 @@ $(function() {
 	var projector, renderer;
 
 	function setupTHREE() {
-		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(40, 4 / 3, 1, 6000);
+		SUBMERSIBLE.camera = new THREE.PerspectiveCamera(40, 16 / 9, 1, 6000);
 		SUBMERSIBLE.camera.position.set(0, 0, 0);
 		SUBMERSIBLE.scene = new THREE.Scene();
 		projector = new THREE.Projector();
 		//the renderer
 		renderer = new THREE.CanvasRenderer();
-		$container.append(renderer.domElement);
+		$("#canvas").append(renderer.domElement);
 		//initialize the size
 		sizeTHREE();
 	}
 
 	function sizeTHREE() {
-		SUBMERSIBLE.width = $container.width();
-		SUBMERSIBLE.height = $container.height();
-		SUBMERSIBLE.camera.aspect = SUBMERSIBLE.width / SUBMERSIBLE.height;
+		//keep the 16/9 ratio. 
+		var w = $container.width();
+		var h = $container.height();
+		if ((w/h) < (16/9)){
+			var sh = w*(9/16);
+			$screen.width(w);
+			$screen.height(sh);
+			//get the difference at the top
+			var topDiff = h - sh;
+			$screen.css({
+				top: topDiff/2,
+				left : 0,
+			})
+		} else {
+			var sw = h * (16/9);
+			$screen.height(h);
+			$screen.width(sw);
+			//get the difference at the top
+			var leftDiff = w - sw
+			$screen.css({
+				left: leftDiff/2,
+				top: 0,
+			})
+		}
+		SUBMERSIBLE.width = $screen.width();
+		SUBMERSIBLE.height = $screen.height();
+		//SUBMERSIBLE.camera.aspect = SUBMERSIBLE.width / SUBMERSIBLE.height;
 		SUBMERSIBLE.camera.updateProjectionMatrix();
 		renderer.setSize(SUBMERSIBLE.width, SUBMERSIBLE.height);
 	}
@@ -493,6 +518,9 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 		this.context = this.$canvas[0].getContext("2d");
 		this.context.canvas.width = this.$canvas.width();
 		this.context.canvas.height = this.$canvas.height();
+		//store those sizes
+		this.width = this.$canvas.width();
+		this.height = this.$canvas.height();
 		//draw the zone for the first time
 		var zonePercent = (SUBMERSIBLE.model.get("zone") / 3) * 100;
 		this.percentage = zonePercent;
@@ -525,8 +553,8 @@ SUBMERSIBLE.Model = Backbone.Model.extend({
 		//flip the percent
 		this.percentage = percent;
 		percent = 100 - percent;
-		var width = this.$canvas.width();
-		var height = this.$canvas.height();
+		var width = this.width;
+		var height = this.height;
 		var radius = Math.min(width, height) / 4;
 		var x = width / 2;
 		var y = height / 2;

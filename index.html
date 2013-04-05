@@ -32,28 +32,6 @@
 	<script type="text/javascript" charset="UTF-8" src="./scripts/application/Metronome.js"></script>
 </head>
 <body>
-	<div id='instructions'>
-		<div id='instruction0' class='instructions'>
-			<img src='./images/speakericon.jpeg' id='speakerIcon'/>
-			<div id='body'>make sure your volume is turned up</div>
-		</div>
-		<div id='instruction1' class='instructions'>
-			<div id='instructionArrow'>&#8592;</div>
-			<div id='body'>tap the arrow buttons to navigate to the next palegic zone</div>
-		</div>
-		<div id='instruction2' class='instructions'>
-			<div id='instructionArrow'>&#8593;&#8595;</div>
-			<div id='body'>or tap the UP and DOWN arrows on your keyboard</div>
-		</div>
-		<div id='instruction3' class='instructions'>
-			<div id='body'>listen. explore. enjoy.</div>
-		</div>
-		<div id='buttonContainer'>
-			<div id='closeButton' class='button'> CLOSE </div> 
-			<div id='nextButton' class='button'> NEXT </div> 
-			<div id='previousButton' class='button'> PREV </div> 
-		</div>
-	</div>
 	<div id="notSupported">
 		<div id='title'>
 			SORRY
@@ -77,21 +55,45 @@
 		</div>
 	</div>
 	<div id="container">
-		<div id="cockpit">
-			<div id="consoleContainer">
-				<div id='console'>
-					<canvas id='zoneIndicatorBulb'></canvas>
+		<div id='screen'>
+			<div id='instructions'>
+				<div id='instruction0' class='instructions'>
+					<img src='./images/speakericon.jpeg' id='speakerIcon'/>
+					<div id='body'>make sure your volume is turned up</div>
+				</div>
+				<div id='instruction1' class='instructions'>
+					<div id='instructionArrow'>&#8592;</div>
+					<div id='body'>tap the arrow buttons to navigate to the next palegic zone</div>
+				</div>
+				<div id='instruction2' class='instructions'>
+					<div id='instructionArrow'>&#8593;&#8595;</div>
+					<div id='body'>or tap the UP and DOWN arrows on your keyboard</div>
+				</div>
+				<div id='instruction3' class='instructions'>
+					<div id='body'>listen. explore. enjoy.</div>
+				</div>
+				<div id='buttonContainer'>
+					<div id='closeButton' class='button'> CLOSE </div> 
+					<div id='nextButton' class='button'> NEXT </div> 
+					<div id='previousButton' class='button'> PREV </div> 
 				</div>
 			</div>
-			<img id='background' src="./images/cockpit-16-9-fix3.png">
-			<div id="upArrowTouch"></div>
-			<div id="downArrowTouch"></div>
-			<img id='upArrow' class="arrow" src="./images/cockpit-up-arrow.png">
-			<img id='downArrow' class="arrow" src="./images/cockpit-down-arrow.png">
+			<div id="cockpit">
+				<div id="consoleContainer">
+					<div id='console'>
+						<canvas id='zoneIndicatorBulb'></canvas>
+					</div>
+				</div>
+				<img id='background' src="./images/cockpit-16-9-fix3.png">
+				<div id="upArrowTouch"></div>
+				<div id="downArrowTouch"></div>
+				<img id='upArrow' class="arrow" src="./images/cockpit-up-arrow.png">
+				<img id='downArrow' class="arrow" src="./images/cockpit-down-arrow.png">
+			</div>
+			<canvas id='seaWall'>
+				<!--div id='seaWallGradient'></div-->
+			</canvas>
+			<div id="canvas"></div>
 		</div>
-		<canvas id='seaWall'>
-			<!--div id='seaWallGradient'></div-->
-		</canvas>
-		<div id="canvas"></div>
 	</div>
 </body>
