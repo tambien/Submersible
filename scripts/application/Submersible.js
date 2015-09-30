@@ -76,7 +76,7 @@ $(function() {
 	var audioContext;
 
 	function makeAudioContext() {
-		audioContext = new webkitAudioContext();
+		audioContext = new AudioContext();
 		SUBMERSIBLE.context = audioContext;
 		SUBMERSIBLE.output = audioContext.createGainNode();
 		//a special output just for fish
